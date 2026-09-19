@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Book — Soapy Bros Car Detailing</title>
+<meta name="description" content="Book a mobile car detail in Iowa City, Coralville, or North Liberty.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="navbar-left">
+      <button class="menu-trigger" id="menuTrigger" aria-label="Open menu" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </button>
+      <a href="index.html" class="brand"><img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing"></a>
+      <div class="nav-links" id="navLinks">
+        <a href="index.html">Home</a>
+        <a href="about.html">About</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="book.html">Book</a>
+        <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div class="navbar-right-group">
+      <div class="navbar-search" id="searchWrap">
+        <button class="search-trigger" id="searchTrigger" aria-label="Search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        </button>
+        <div class="search-popover" id="searchPopover">
+          <div class="navbar-search-input">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+            <input type="text" id="siteSearchInput" placeholder="Search the site..." autocomplete="off">
+          </div>
+          <div class="search-results" id="searchResults"></div>
+        </div>
+      </div>
+      <a class="btn btn-primary" href="book.html">Book now</a>
+    </div>
+  </nav>
+</header>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+<aside class="menu-drawer" id="menuDrawer">
+  <div class="menu-drawer-header">
+    <img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing">
+    <button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button>
+  </div>
+  <nav class="menu-drawer-links">
+    <a href="index.html">Home</a>
+    <a href="about.html">About</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="book.html">Book</a>
+    <a href="reviews.html">Reviews</a>
+        <a href="contact.html">Contact</a>
+  </nav>
+  <div class="menu-drawer-footer">
+    <a href="tel:3194710054">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      319-471-0054
+    </a>
+  </div>
+</aside>
+
+<main>
+
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">Book a detail</span>
+      <h1>Book now.</h1>
+      <p>Send your details and we'll text or call to confirm a time. We'll give the final price once we arrive and see the vehicle.</p>
+    </div>
+  </section>
+
+  <section style="padding-top:0;">
+    <div class="wrap">
+      <div class="booking-panel" id="bookingPanel">
+        <form id="bookingForm" action="https://formsubmit.co/soapybrosic@gmail.com" method="POST">
+          <input type="hidden" name="_subject" value="New Soapy Bros booking request">
+          <input type="hidden" name="_template" value="table">
+          <input type="text" name="_honey" style="display:none">
+
+          <div class="form-grid">
+            <div class="field">
+              <label for="name">Full name</label>
+              <input type="text" id="name" name="Name" placeholder="Your name" required>
+            </div>
+            <div class="field">
+              <label for="phone">Phone number</label>
+              <input type="tel" id="phone" name="Phone" placeholder="319-000-0000" required>
+            </div>
+            <div class="field full email-field">
+              <label for="email">Email (optional)</label>
+              <input type="email" id="email" name="Email" placeholder="you@example.com">
+            </div>
+            <div class="field full">
+              <label>Preferred date &amp; time</label>
+              <button type="button" id="openPickerBtn" class="picker-trigger">Choose a date &amp; time</button>
+              <input type="hidden" id="dateInput" name="Preferred date">
+              <input type="hidden" id="timeInput" name="Preferred time">
+              <p class="picker-error" id="pickerError" style="display:none;">Please choose a date and time before submitting.</p>
+            </div>
+            <div class="field">
+              <label for="cartype">Car type</label>
+              <select id="cartype" name="Car type" required>
+                <option value="" disabled selected>Select a car type</option>
+                <option value="Sedan">Sedan</option>
+                <option value="SUV">SUV</option>
+                <option value="Minivan">Minivan</option>
+                <option value="Motorcycle">Motorcycle</option>
+                <option value="Truck">Truck</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="service">Service</label>
+              <select id="service" name="Service type" required>
+                <option value="" disabled selected>Select a service</option>
+                <option value="Exterior only">Exterior only</option>
+                <option value="Interior only">Interior only</option>
+                <option value="Interior & exterior">Interior &amp; exterior</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="city">City</label>
+              <select id="city" name="City" required>
+                <option value="" disabled selected>Select a city</option>
+                <option value="Iowa City">Iowa City</option>
+                <option value="Coralville">Coralville</option>
+                <option value="North Liberty">North Liberty</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="zip">Zip code</label>
+              <input type="text" id="zip" name="Zip code" placeholder="52240" inputmode="numeric" pattern="[0-9]{5}" required>
+            </div>
+            <div class="field full">
+              <label for="address">Full address</label>
+              <input type="text" id="address" name="Address" placeholder="Street address for the detail" required>
+            </div>
+            <div class="field full">
+              <label for="notes">Notes (optional)</label>
+              <textarea id="notes" name="Notes" placeholder="Anything else we should know"></textarea>
+            </div>
+          </div>
+
+          <input type="hidden" id="estimateField" name="Starting price">
+
+          <div class="quote-box" id="quoteBox">
+            <div>
+              <span class="quote-label">Starting price</span><br>
+              <span class="quote-amt" id="quoteAmt">Select a car type &amp; service</span>
+            </div>
+            <div class="quote-note">This is the starting price. Final price is confirmed once we see the vehicle.</div>
+          </div>
+
+          <div class="form-foot">
+            <p class="form-note">We'll reply by phone to confirm your time and price.</p>
+            <button class="submit-btn" type="submit">Submit Booking</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="picker-overlay" id="pickerOverlay">
+        <div class="picker-modal">
+          <div class="picker-modal-header">
+            <button type="button" class="picker-nav" id="prevMonthBtn" aria-label="Previous month">&#8249;</button>
+            <span class="picker-month-label" id="monthLabel"></span>
+            <button type="button" class="picker-nav" id="nextMonthBtn" aria-label="Next month">&#8250;</button>
+            <button type="button" class="picker-close" id="closePickerBtn" aria-label="Close">&times;</button>
+          </div>
+
+          <div class="picker-weekdays">
+            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
+          </div>
+          <div class="picker-grid" id="calendarGrid"></div>
+
+          <div id="timeSlotSection" class="picker-timesection" style="display:none;">
+            <p class="picker-time-label" id="selectedDateLabel"></p>
+            <div class="picker-timegrid" id="timeSlotGrid"></div>
+          </div>
+
+          <p class="picker-loading" id="pickerLoading">Loading availability...</p>
+        </div>
+      </div>
+
+      <div class="booking-panel" id="successPanel" style="display:none; text-align:center;">
+        <h2 style="font-size:clamp(26px,3vw,34px); margin-bottom:14px;">Booking Submitted</h2>
+        <p style="color:var(--chrome-300); font-size:16px; max-width:440px; margin:0 auto;">Thanks — we've got your request. We'll call or text you at the number you gave us to confirm your time and price.</p>
+      </div>
+
+      <div class="booking-panel" id="closedPanel" style="display:none; text-align:center;">
+        <h2 style="font-size:clamp(26px,3vw,34px); margin-bottom:14px;">Not taking new bookings right now</h2>
+        <p style="color:var(--chrome-300); font-size:16px; max-width:440px; margin:0 auto 20px;">We're temporarily not accepting new requests through the site. Call or text us directly and we'll see what we can do.</p>
+        <a class="btn btn-primary" href="tel:3194710054">Call 319-471-0054</a>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const prices = {
+      Sedan: { "Exterior only": 55, "Interior only": 75, "Interior & exterior": 100 },
+      SUV: { "Exterior only": 70, "Interior only": 90, "Interior & exterior": 125 },
+      Minivan: { "Exterior only": 70, "Interior only": 120, "Interior & exterior": 155 },
+      Motorcycle: { "Exterior only": 75, "Interior only": 75 },
+      Truck: { "Exterior only": 95, "Interior only": 115, "Interior & exterior": 150 }
+    };
+
+    const carTypeEl = document.getElementById('cartype');
+    const serviceEl = document.getElementById('service');
+    const quoteAmt = document.getElementById('quoteAmt');
+    const estimateField = document.getElementById('estimateField');
+
+    function updateServiceOptions(){
+      const car = carTypeEl.value;
+      Array.from(serviceEl.options).forEach(function (option) {
+        if (!option.value) return;
+        const available = !!(prices[car] && prices[car][option.value] !== undefined);
+        option.hidden = car === 'Motorcycle' && !available;
+        option.disabled = car === 'Motorcycle' && !available;
+      });
+      if (serviceEl.value && prices[car] && prices[car][serviceEl.value] === undefined) {
+        serviceEl.value = '';
+      }
+    }
+
+    function updateQuote(){
+      updateServiceOptions();
+      const car = carTypeEl.value;
+      const service = serviceEl.value;
+      if (car && service && prices[car] && prices[car][service] !== undefined){
+        const amt = prices[car][service];
+        quoteAmt.textContent = '$' + amt.toFixed(2);
+        estimateField.value = '$' + amt.toFixed(2) + ' (' + car + ', ' + service + ')';
+      } else {
+        quoteAmt.textContent = 'Select a car type & service';
+        estimateField.value = '';
+      }
+    }
+
+    carTypeEl.addEventListener('change', updateQuote);
+    serviceEl.addEventListener('change', updateQuote);
+
+    const prefillParams = new URLSearchParams(window.location.search);
+    const prefillVehicle = prefillParams.get('vehicle');
+    const prefillService = prefillParams.get('service');
+    if (prefillVehicle && prices[prefillVehicle]) {
+      carTypeEl.value = prefillVehicle;
+    }
+    if (prefillService && prices[carTypeEl.value] && prices[carTypeEl.value][prefillService] !== undefined) {
+      serviceEl.value = prefillService;
+    }
+    updateQuote();
+
+    // ---------- DATE & TIME PICKER ----------
+    const sheetWebAppUrl = 'https://script.google.com/macros/s/AKfycby90m4IQJhWy7z5Kw3shswafCO1HoFDO_2JradATRSS5F9nUiYGRIHvDXzaWBClXUvR/exec';
+
+    const openPickerBtn = document.getElementById('openPickerBtn');
+    const closePickerBtn = document.getElementById('closePickerBtn');
+    const pickerOverlay = document.getElementById('pickerOverlay');
+    const prevMonthBtn = document.getElementById('prevMonthBtn');
+    const nextMonthBtn = document.getElementById('nextMonthBtn');
+    const monthLabel = document.getElementById('monthLabel');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const timeSlotSection = document.getElementById('timeSlotSection');
+    const timeSlotGrid = document.getElementById('timeSlotGrid');
+    const selectedDateLabel = document.getElementById('selectedDateLabel');
+    const pickerLoading = document.getElementById('pickerLoading');
+    const dateInput = document.getElementById('dateInput');
+    const timeInput = document.getElementById('timeInput');
+    const pickerError = document.getElementById('pickerError');
+
+    const BUSINESS_START_HOUR = 8;   // 8 AM
+    const BUSINESS_END_HOUR = 20;    // 8 PM
+    const SLOT_LENGTH_HOURS = 3;     // booking windows are 3 hours each
+    const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    let busyEvents = [];
+    let busyLoaded = false;
+    let viewYear, viewMonth;
+    let chosenDate = null;
+
+    function pad(n){ return n < 10 ? '0' + n : '' + n; }
+
+    function loadBusyEvents(){
+      pickerLoading.style.display = 'block';
+      fetch(sheetWebAppUrl)
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+          busyEvents = (data.busy || []).map(function(ev){
+            return { start: new Date(ev.start), end: new Date(ev.end), allDay: ev.allDay };
+          });
+        })
+        .catch(function(){ busyEvents = []; })
+        .finally(function(){
+          busyLoaded = true;
+          pickerLoading.style.display = 'none';
+          renderCalendar();
+        });
+    }
+
+    function dayIsFullyBusy(dateObj){
+      // A day counts as fully busy if an all-day event covers it,
+      // or if busy time ranges cover the entire business day.
+      const dayStart = new Date(dateObj); dayStart.setHours(BUSINESS_START_HOUR,0,0,0);
+      const dayEnd = new Date(dateObj); dayEnd.setHours(BUSINESS_END_HOUR,0,0,0);
+
+      for (const ev of busyEvents){
+        if (ev.allDay && sameDay(ev.start, dateObj)) return true;
+      }
+      return false;
+    }
+
+    function dayHasBusyEvents(dateObj){
+      return busyEvents.some(function(ev){ return sameDay(ev.start, dateObj) || sameDay(ev.end, dateObj); });
+    }
+
+    function sameDay(a, b){
+      return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+    }
+
+    function renderCalendar(){
+      const firstOfMonth = new Date(viewYear, viewMonth, 1);
+      const startWeekday = firstOfMonth.getDay();
+      const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+      const today = new Date(); today.setHours(0,0,0,0);
+
+      monthLabel.textContent = monthNames[viewMonth] + ' ' + viewYear;
+      calendarGrid.innerHTML = '';
+
+      for (let i = 0; i < startWeekday; i++){
+        const empty = document.createElement('span');
+        empty.className = 'picker-day empty';
+        calendarGrid.appendChild(empty);
+      }
+
+      for (let d = 1; d <= daysInMonth; d++){
+        const dateObj = new Date(viewYear, viewMonth, d);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'picker-day';
+        btn.textContent = d;
+
+        const isPast = dateObj < today;
+        const fullyBusy = busyLoaded && dayIsFullyBusy(dateObj);
+
+        if (isPast || fullyBusy){
+          btn.classList.add('disabled');
+          btn.disabled = true;
+        } else if (busyLoaded && dayHasBusyEvents(dateObj)){
+          btn.classList.add('busy');
+        }
+
+        if (sameDay(dateObj, today)) btn.classList.add('today');
+        if (chosenDate && sameDay(dateObj, chosenDate)) btn.classList.add('selected');
+
+        btn.addEventListener('click', function(){ selectDate(dateObj); });
+        calendarGrid.appendChild(btn);
+      }
+    }
+
+    function selectDate(dateObj){
+      chosenDate = dateObj;
+      renderCalendar();
+      renderTimeSlots(dateObj);
+    }
+
+    function renderTimeSlots(dateObj){
+      timeSlotSection.style.display = 'block';
+      selectedDateLabel.textContent = dateObj.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
+      timeSlotGrid.innerHTML = '';
+
+      for (let hour = BUSINESS_START_HOUR; hour < BUSINESS_END_HOUR; hour += SLOT_LENGTH_HOURS){
+        const slotStart = new Date(dateObj); slotStart.setHours(hour, 0, 0, 0);
+        const slotEnd = new Date(dateObj); slotEnd.setHours(hour + SLOT_LENGTH_HOURS, 0, 0, 0);
+
+        const isBusy = busyEvents.some(function(ev){
+          if (ev.allDay) return sameDay(ev.start, dateObj);
+          return slotStart < ev.end && slotEnd > ev.start;
+        });
+
+        const startLabel = slotStart.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+        const endLabel = slotEnd.toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+        const label = startLabel + ' - ' + endLabel;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'picker-timeslot' + (isBusy ? ' disabled' : '');
+        btn.textContent = label;
+
+        if (!isBusy){
+          btn.addEventListener('click', function(){
+            document.querySelectorAll('.picker-timeslot.selected').forEach(function(el){ el.classList.remove('selected'); });
+            btn.classList.add('selected');
+            confirmSelection(dateObj, hour);
+          });
+        } else {
+          btn.disabled = true;
+        }
+
+        timeSlotGrid.appendChild(btn);
+      }
+    }
+
+    function confirmSelection(dateObj, hour){
+      const yyyy = dateObj.getFullYear();
+      const mm = pad(dateObj.getMonth() + 1);
+      const dd = pad(dateObj.getDate());
+      dateInput.value = yyyy + '-' + mm + '-' + dd;
+      timeInput.value = pad(hour) + ':00';
+
+      const dateLabel = dateObj.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+      const timeLabel = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), hour).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
+      openPickerBtn.textContent = dateLabel + ' at ' + timeLabel;
+      openPickerBtn.classList.add('has-value');
+      pickerError.style.display = 'none';
+
+      setTimeout(function(){ closePicker(); }, 350);
+    }
+
+    function openPicker(){
+      pickerOverlay.classList.add('open');
+      if (!chosenDate){
+        const now = new Date();
+        viewYear = now.getFullYear();
+        viewMonth = now.getMonth();
+      }
+      if (!busyLoaded){
+        loadBusyEvents();
+      } else {
+        renderCalendar();
+      }
+    }
+
+    function closePicker(){
+      pickerOverlay.classList.remove('open');
+    }
+
+    openPickerBtn.addEventListener('click', openPicker);
+    closePickerBtn.addEventListener('click', closePicker);
+    pickerOverlay.addEventListener('click', function(e){ if (e.target === pickerOverlay) closePicker(); });
+
+    prevMonthBtn.addEventListener('click', function(){
+      viewMonth--; if (viewMonth < 0){ viewMonth = 11; viewYear--; }
+      renderCalendar();
+    });
+    nextMonthBtn.addEventListener('click', function(){
+      viewMonth++; if (viewMonth > 11){ viewMonth = 0; viewYear++; }
+      renderCalendar();
+    });
+
+    const bookingForm = document.getElementById('bookingForm');
+    const bookingPanel = document.getElementById('bookingPanel');
+    const successPanel = document.getElementById('successPanel');
+
+    bookingForm.addEventListener('submit', function(e){
+      e.preventDefault();
+
+      if (!dateInput.value || !timeInput.value){
+        pickerError.style.display = 'block';
+        openPickerBtn.scrollIntoView({ behavior:'smooth', block:'center' });
+        return;
+      }
+
+      const submitBtn = bookingForm.querySelector('.submit-btn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+
+      const formData = new FormData(bookingForm);
+      const ajaxUrl = bookingForm.action.replace('formsubmit.co/', 'formsubmit.co/ajax/');
+
+      // Fire both off in the background — neither blocks the confirmation.
+      // Apps Script and FormSubmit can both take a few seconds to respond,
+      // but the booking is captured the moment the request is sent, so there's
+      // no need to make the customer wait on that round trip.
+      fetch(sheetWebAppUrl, {
+        method: 'POST',
+        mode: 'no-cors',
+        body: formData
+      }).catch(function(){ /* best-effort, ignore failures */ });
+
+      fetch(ajaxUrl, {
+        method: 'POST',
+        body: formData,
+        headers: { 'Accept': 'application/json' }
+      }).catch(function(){ /* best-effort, ignore failures */ });
+
+      // Show confirmation almost immediately rather than waiting on the network.
+      setTimeout(function(){
+        bookingPanel.style.display = 'none';
+        successPanel.style.display = 'block';
+        successPanel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }, 500);
+    });
+  </script>
+
+</main>
+
+<footer>
+  <div class="wrap footer-row">
+    <img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing">
+    <span class="phone">319-471-0054</span>
+    <a class="footer-email" href="mailto:soapybrosic@gmail.com">soapybrosic@gmail.com</a>
+    <div class="footer-social">
+      <a href="https://www.instagram.com/soapybro.s/?hl=en" target="_blank" rel="noopener" aria-label="Soapy Bros on Instagram">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
+      </a>
+      <a href="https://www.tiktok.com/@soapybros1" target="_blank" rel="noopener" aria-label="Soapy Bros on TikTok">
+        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M16.5 3c.4 2.2 1.9 3.9 4.1 4.2v2.8c-1.5.1-2.9-.3-4.1-1.1v6.4c0 3.1-2.5 5.7-5.7 5.7S5.1 18.4 5.1 15.3s2.5-5.7 5.7-5.7c.3 0 .6 0 .9.1v2.9c-.3-.1-.6-.2-.9-.2-1.6 0-2.8 1.3-2.8 2.8s1.3 2.8 2.8 2.8 2.9-1.2 2.9-2.8V3h2.8z"/></svg>
+      </a>
+    </div>
+    <p>© 2026 SOAPY BROS CAR DETAILING</p>
+  </div>
+</footer>
+
+<script src="site.js"></script>
+<script>
+  document.addEventListener('sbconfig', function (e) {
+    var config = e.detail;
+    if (config.bookingsOpen === false) {
+      var bookingPanel = document.getElementById('bookingPanel');
+      var closedPanel = document.getElementById('closedPanel');
+      if (bookingPanel) bookingPanel.style.display = 'none';
+      if (closedPanel) closedPanel.style.display = 'block';
+    }
+  });
+</script>
+</body>
+</html>
