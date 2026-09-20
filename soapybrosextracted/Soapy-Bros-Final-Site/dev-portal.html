@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dev Portal</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="stylesheet" href="styles.css">
+<style>
+  body{padding:60px 24px; min-height:100vh;}
+  .portal-lock{
+    width:100%; max-width:380px; margin:120px auto 0; background:var(--panel); border:1px solid var(--line);
+    border-radius:var(--radius-lg); padding:36px; text-align:center;
+  }
+  .portal-lock-icon{
+    width:48px; height:48px; margin:0 auto 20px; border-radius:999px; background:var(--panel-2);
+    border:1px solid var(--line); display:flex; align-items:center; justify-content:center; color:var(--cyan);
+  }
+  .portal-lock-icon svg{width:22px; height:22px;}
+  .portal-lock h1{font-size:22px; margin-bottom:8px;}
+  .portal-lock p{color:var(--chrome-500); font-size:13.5px; margin-bottom:24px;}
+  .portal-lock input{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius-sm);
+    color:var(--chrome-100); font-family:'IBM Plex Mono', monospace; font-size:15px; text-align:center;
+    letter-spacing:0.1em; padding:13px 16px; margin-bottom:14px; transition:border-color .2s ease;
+  }
+  .portal-lock input:focus{border-color:var(--blue-300); outline:none;}
+  .portal-lock input.shake{animation:shakeX .4s ease;}
+  @keyframes shakeX{
+    0%,100%{transform:translateX(0);} 20%{transform:translateX(-8px);}
+    40%{transform:translateX(8px);} 60%{transform:translateX(-6px);} 80%{transform:translateX(6px);}
+  }
+  .portal-error{color:#e8998f; font-size:12.5px; font-family:'IBM Plex Mono', monospace; min-height:16px; margin-bottom:10px;}
+  .portal-lock.hidden{display:none;}
+
+  .portal-dash{width:100%; max-width:920px; margin:0 auto; display:none;}
+  .portal-dash.open{display:block;}
+  .portal-dash-head{margin-bottom:36px;}
+  .portal-dash-head h1{font-size:30px; margin-bottom:8px;}
+  .portal-dash-head p{color:var(--chrome-500); font-size:14px;}
+
+  .portal-section{margin-bottom:44px;}
+  .portal-section-title{
+    font-family:'IBM Plex Mono', monospace; font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--blue-300); margin-bottom:16px;
+  }
+
+  .portal-stats{display:grid; grid-template-columns:repeat(4, 1fr); gap:14px;}
+  .portal-stat{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); padding:20px;
+  }
+  .portal-stat .num{font-family:'Sora', sans-serif; font-weight:700; font-size:30px; color:var(--chrome-100); display:block;}
+  .portal-stat.live .num{color:var(--cyan);}
+  .portal-stat .label{font-family:'IBM Plex Mono', monospace; font-size:11px; letter-spacing:0.05em; text-transform:uppercase; color:var(--chrome-500);}
+  .portal-live-dot{display:inline-block; width:7px; height:7px; border-radius:50%; background:var(--cyan); margin-right:6px; animation:livePulse 1.6s ease-in-out infinite;}
+  @keyframes livePulse{0%,100%{opacity:1;} 50%{opacity:0.35;}}
+
+  .portal-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .portal-card{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md);
+    padding:22px; text-decoration:none; display:flex; flex-direction:column; gap:8px;
+    transition:border-color .2s ease, transform .2s ease;
+  }
+  .portal-card:hover{border-color:var(--blue-500); transform:translateY(-2px);}
+  .portal-card h3{font-family:'Sora', sans-serif; font-weight:600; font-size:15.5px; color:var(--chrome-100);}
+  .portal-card p{font-size:12.5px; color:var(--chrome-500);}
+
+  .portal-control{
+    background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); padding:24px; margin-bottom:14px;
+  }
+  .portal-control-head{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:6px; flex-wrap:wrap;}
+  .portal-control h3{font-family:'Sora', sans-serif; font-weight:600; font-size:16px;}
+  .portal-control p{font-size:13px; color:var(--chrome-500); margin-bottom:16px;}
+  .portal-status{
+    font-family:'IBM Plex Mono', monospace; font-size:11.5px; letter-spacing:0.05em; text-transform:uppercase;
+    padding:5px 12px; border-radius:999px; border:1px solid var(--line);
+  }
+  .portal-status.on{color:var(--cyan); border-color:var(--cyan);}
+  .portal-status.off{color:#e8998f; border-color:#e8998f;}
+
+  .portal-textarea{
+    width:100%; background:var(--panel-2); border:1px solid var(--line); border-radius:var(--radius-sm);
+    color:var(--chrome-100); font-family:'Inter', sans-serif; font-size:14px; padding:12px 14px;
+    min-height:70px; resize:vertical; margin-bottom:12px;
+  }
+  .portal-btn-row{display:flex; gap:10px; flex-wrap:wrap;}
+  .portal-btn{
+    font-family:'Inter', sans-serif; font-weight:600; font-size:13.5px; border-radius:999px;
+    padding:10px 20px; cursor:pointer; border:1px solid var(--line); background:var(--panel-2); color:var(--chrome-100);
+    transition:border-color .2s ease;
+  }
+  .portal-btn:hover{border-color:var(--blue-300);}
+  .portal-btn.primary{background:var(--chrome-100); color:var(--black); border-color:var(--chrome-100);}
+  .portal-btn.danger{color:#e8998f; border-color:#e8998f;}
+  .portal-note{font-family:'IBM Plex Mono', monospace; font-size:11.5px; color:var(--chrome-500); margin-top:10px; min-height:14px;}
+
+  .portal-bookings{background:var(--panel); border:1px solid var(--line); border-radius:var(--radius-md); overflow:hidden;}
+  .portal-booking-row{
+    display:grid; grid-template-columns:1.2fr 0.8fr 0.8fr 1fr; gap:12px; padding:14px 18px;
+    border-bottom:1px solid var(--line); font-size:13px;
+  }
+  .portal-booking-row:last-child{border-bottom:none;}
+  .portal-booking-row.head{font-family:'IBM Plex Mono', monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:0.05em; color:var(--chrome-500);}
+  .portal-booking-row span.name{color:var(--chrome-100); font-weight:600;}
+  .portal-booking-row span{color:var(--chrome-300); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .portal-empty{padding:20px; text-align:center; color:var(--chrome-500); font-size:13px;}
+
+  @media (max-width:700px){
+    .portal-stats{grid-template-columns:1fr 1fr;}
+    .portal-grid{grid-template-columns:1fr;}
+    .portal-booking-row{grid-template-columns:1fr 1fr; row-gap:4px;}
+  }
+</style>
+</head>
+<body>
+
+  <div class="portal-lock" id="portalLock">
+    <div class="portal-lock-icon">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </div>
+    <h1>Dev Portal</h1>
+    <p>This area is restricted. Enter the password to continue.</p>
+    <p class="portal-error" id="portalError"></p>
+    <input type="password" id="portalPassword" placeholder="Password" autocomplete="off">
+    <button class="btn btn-primary" id="portalSubmit" style="width:100%; justify-content:center;">Unlock</button>
+  </div>
+
+  <div class="portal-dash" id="portalDash">
+    <div class="portal-dash-head">
+      <h1>Soapy Bros — Dev Portal</h1>
+      <p>Live site controls, traffic, and quick links.</p>
+    </div>
+
+    <div class="portal-section">
+      <div class="portal-section-title">Traffic</div>
+      <div class="portal-stats">
+        <div class="portal-stat live">
+          <span class="num"><span class="portal-live-dot"></span><span id="statActiveNow">-</span></span>
+          <span class="label">Active now</span>
+        </div>
+        <div class="portal-stat">
+          <span class="num" id="statToday">-</span>
+          <span class="label">Views today</span>
+        </div>
+        <div class="portal-stat">
+          <span class="num" id="statAllTime">-</span>
+          <span class="label">Views all-time</span>
+        </div>
+        <div class="portal-stat">
+          <span class="num" id="statTopPage">-</span>
+          <span class="label">Top page today</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="portal-section">
+      <div class="portal-section-title">Controls</div>
+
+      <div class="portal-control">
+        <div class="portal-control-head">
+          <h3>Booking form</h3>
+          <span class="portal-status" id="bookingStatus">-</span>
+        </div>
+        <p>When closed, the Book page shows a "not taking new bookings" message with your phone number instead of the form.</p>
+        <div class="portal-btn-row">
+          <button class="portal-btn primary" id="openBookingBtn">Open bookings</button>
+          <button class="portal-btn danger" id="closeBookingBtn">Close bookings</button>
+        </div>
+        <p class="portal-note" id="bookingNote"></p>
+      </div>
+
+      <div class="portal-control">
+        <h3>Site-wide message</h3>
+        <p>Shows as a banner across the top of the home page. Leave it up as long as you want — clear it whenever.</p>
+        <textarea class="portal-textarea" id="messageInput" placeholder="e.g. We're closed this weekend for a family event — back Monday!"></textarea>
+        <div class="portal-btn-row">
+          <button class="portal-btn primary" id="postMessageBtn">Post message</button>
+          <button class="portal-btn danger" id="clearMessageBtn">Clear message</button>
+        </div>
+        <p class="portal-note" id="messageNote"></p>
+      </div>
+    </div>
+
+    <div class="portal-section">
+      <div class="portal-section-title">Recent bookings</div>
+      <div class="portal-bookings" id="recentBookings">
+        <div class="portal-empty">Loading...</div>
+      </div>
+    </div>
+
+    <div class="portal-section">
+      <div class="portal-section-title">Quick links</div>
+      <div class="portal-grid">
+        <a class="portal-card" href="https://sheets.google.com" target="_blank" rel="noopener">
+          <h3>Customer Database</h3>
+          <p>Open Google Sheets to view or edit bookings.</p>
+        </a>
+        <a class="portal-card" href="https://calendar.google.com" target="_blank" rel="noopener">
+          <h3>Booking Calendar</h3>
+          <p>Open Google Calendar to manage availability.</p>
+        </a>
+        <a class="portal-card" href="https://script.google.com" target="_blank" rel="noopener">
+          <h3>Apps Script</h3>
+          <p>Edit the backend that powers bookings and sync.</p>
+        </a>
+        <a class="portal-card" href="index.html">
+          <h3>Back to site</h3>
+          <p>Return to the live website.</p>
+        </a>
+      </div>
+    </div>
+  </div>
+
+<script>
+  (function(){
+    var DEV_PASSWORD = "!soapybros";
+    var APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby90m4IQJhWy7z5Kw3shswafCO1HoFDO_2JradATRSS5F9nUiYGRIHvDXzaWBClXUvR/exec';
+
+    var lock = document.getElementById('portalLock');
+    var dash = document.getElementById('portalDash');
+    var input = document.getElementById('portalPassword');
+    var submitBtn = document.getElementById('portalSubmit');
+    var errorEl = document.getElementById('portalError');
+
+    function tryUnlock(){
+      if (input.value === DEV_PASSWORD){
+        sessionStorage.setItem('devPortalToken', input.value);
+        lock.classList.add('hidden');
+        dash.classList.add('open');
+        loadDashboard();
+      } else {
+        errorEl.textContent = 'Incorrect password.';
+        input.classList.remove('shake');
+        void input.offsetWidth;
+        input.classList.add('shake');
+        input.value = '';
+        input.focus();
+      }
+    }
+
+    submitBtn.addEventListener('click', tryUnlock);
+    input.addEventListener('keydown', function(e){
+      if (e.key === 'Enter') tryUnlock();
+    });
+
+    var savedToken = sessionStorage.getItem('devPortalToken');
+    if (savedToken === DEV_PASSWORD){
+      lock.classList.add('hidden');
+      dash.classList.add('open');
+      loadDashboard();
+    } else {
+      input.focus();
+    }
+
+    // ---------- Dashboard data loading ----------
+    function loadDashboard(){
+      loadAnalytics();
+      loadConfig();
+      loadRecentBookings();
+    }
+
+    function authedUrl(params){
+      var token = sessionStorage.getItem('devPortalToken');
+      var qs = new URLSearchParams(params);
+      qs.set('token', token);
+      return APPS_SCRIPT_URL + '?' + qs.toString();
+    }
+    function authedBody(params){
+      var token = sessionStorage.getItem('devPortalToken');
+      var body = new URLSearchParams(params);
+      body.set('token', token);
+      return body;
+    }
+
+    function loadAnalytics(){
+      fetch(authedUrl({ action: 'analytics' }))
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+          document.getElementById('statActiveNow').textContent = data.activeNow;
+          document.getElementById('statToday').textContent = data.pageviewsToday;
+          document.getElementById('statAllTime').textContent = data.pageviewsAllTime;
+
+          var top = '-';
+          var max = 0;
+          if (data.topPagesToday){
+            Object.keys(data.topPagesToday).forEach(function(page){
+              if (data.topPagesToday[page] > max){ max = data.topPagesToday[page]; top = page; }
+            });
+          }
+          document.getElementById('statTopPage').textContent = top;
+        })
+        .catch(function(){
+          document.getElementById('statActiveNow').textContent = '-';
+        });
+    }
+
+    function loadConfig(){
+      fetch(APPS_SCRIPT_URL + '?action=config')
+        .then(function(res){ return res.json(); })
+        .then(function(config){
+          var statusEl = document.getElementById('bookingStatus');
+          if (config.bookingsOpen){
+            statusEl.textContent = 'Open';
+            statusEl.className = 'portal-status on';
+          } else {
+            statusEl.textContent = 'Closed';
+            statusEl.className = 'portal-status off';
+          }
+          if (config.siteMessage){
+            document.getElementById('messageInput').value = config.siteMessage;
+          }
+        });
+    }
+
+    function loadRecentBookings(){
+      fetch(authedUrl({ action: 'recentbookings' }))
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+          var container = document.getElementById('recentBookings');
+          if (!data.bookings || data.bookings.length === 0){
+            container.innerHTML = '<div class="portal-empty">No bookings logged yet.</div>';
+            return;
+          }
+          var html = '<div class="portal-booking-row head"><span>Name</span><span>Visit</span><span>Car</span><span>Wash</span></div>';
+          data.bookings.forEach(function(b){
+            html += '<div class="portal-booking-row"><span class="name">' + (b.name || '-') + '</span><span>' + (b.lastVisit || '-') + '</span><span>' + (b.carType || '-') + '</span><span>' + (b.wash || '-') + '</span></div>';
+          });
+          container.innerHTML = html;
+        })
+        .catch(function(){
+          document.getElementById('recentBookings').innerHTML = '<div class="portal-empty">Could not load bookings.</div>';
+        });
+    }
+
+    // ---------- Controls ----------
+    document.getElementById('openBookingBtn').addEventListener('click', function(){
+      setBookingsOpen(true);
+    });
+    document.getElementById('closeBookingBtn').addEventListener('click', function(){
+      setBookingsOpen(false);
+    });
+
+    function setBookingsOpen(open){
+      var note = document.getElementById('bookingNote');
+      note.textContent = 'Saving...';
+      fetch(APPS_SCRIPT_URL, { method: 'POST', body: authedBody({ action: 'setbookingsopen', open: open }) })
+        .then(function(res){ return res.json(); })
+        .then(function(){
+          note.textContent = open ? 'Bookings are now open.' : 'Bookings are now closed.';
+          loadConfig();
+        })
+        .catch(function(){ note.textContent = 'Something went wrong — try again.'; });
+    }
+
+    document.getElementById('postMessageBtn').addEventListener('click', function(){
+      var msg = document.getElementById('messageInput').value;
+      var note = document.getElementById('messageNote');
+      note.textContent = 'Saving...';
+      fetch(APPS_SCRIPT_URL, { method: 'POST', body: authedBody({ action: 'setmessage', message: msg }) })
+        .then(function(res){ return res.json(); })
+        .then(function(){ note.textContent = 'Message posted to the home page.'; })
+        .catch(function(){ note.textContent = 'Something went wrong — try again.'; });
+    });
+
+    document.getElementById('clearMessageBtn').addEventListener('click', function(){
+      document.getElementById('messageInput').value = '';
+      var note = document.getElementById('messageNote');
+      note.textContent = 'Saving...';
+      fetch(APPS_SCRIPT_URL, { method: 'POST', body: authedBody({ action: 'setmessage', message: '' }) })
+        .then(function(res){ return res.json(); })
+        .then(function(){ note.textContent = 'Message cleared.'; })
+        .catch(function(){ note.textContent = 'Something went wrong — try again.'; });
+    });
+  })();
+</script>
+
+</body>
+</html>
