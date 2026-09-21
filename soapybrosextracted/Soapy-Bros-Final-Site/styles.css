@@ -917,3 +917,38 @@ header{background:rgba(7,19,30,.95);backdrop-filter:blur(12px)}
 .btn-primary:hover,.submit-btn:hover{background:#b9e9ff;box-shadow:none}
 .panel,.check-card,.step,.area-card,.value-item,.price-card,.review-card,.review-page-card,.booking-panel,.pricing-result,.picker-modal{background:#0c2233;box-shadow:inset 0 1px rgba(255,255,255,.025),0 12px 28px rgba(0,0,0,.11)}
 .cta-band{background:#10334b;box-shadow:none}
+
+/* The shared visual language: a local studio, not a software dashboard. */
+body{background:#071925;color:#eaf2f4}
+body:before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background:radial-gradient(circle at 8% 11%,rgba(82,142,166,.12),transparent 22%),radial-gradient(circle at 92% 62%,rgba(121,114,176,.08),transparent 24%)}
+h1,h2,h3{font-family:Georgia,'Times New Roman',serif;font-weight:normal;letter-spacing:-.045em;line-height:1.05}
+.eyebrow{font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.055em;text-transform:none;color:#9fc2d0}.eyebrow::before{width:24px;background:#7bc5c2}
+header{background:rgba(7,25,37,.94);border-bottom-color:rgba(174,213,222,.12)}
+.nav-links a{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;letter-spacing:.015em}
+.btn{font-family:'Inter',sans-serif;font-weight:700;letter-spacing:.01em}.btn-primary,.submit-btn{background:#a4d9d1;color:#09232b}.btn-primary:hover,.submit-btn:hover{background:#d0efea}
+.btn-quiet{border-color:rgba(184,220,228,.35);color:#d8edf0}.btn-quiet:hover{border-color:#92d1ca;background:rgba(127,197,194,.08)}
+.page-hero{padding:164px 0 82px;background:linear-gradient(90deg,rgba(8,28,42,.94),rgba(8,28,42,.65)),radial-gradient(circle at 85% 18%,rgba(114,116,178,.17),transparent 29%);border-bottom-color:rgba(174,213,222,.12)}
+.page-hero:before{display:none}.page-hero h1{max-width:860px;font-size:clamp(45px,5.7vw,72px);color:#f4f5ee}.page-hero p{color:#b5cbd2;font-size:16px}
+.panel,.check-card,.step,.area-card,.value-item,.price-card,.review-card,.review-page-card,.booking-panel,.pricing-result,.picker-modal{border-color:rgba(174,213,222,.15);border-radius:14px;background:#0b2738;box-shadow:none}.check-card:hover,.home-link-card:hover,.review-link-card:hover{border-color:#8ccbc4;box-shadow:none}
+.field input,.field textarea,.field select,.picker-trigger,.pricing-controls select{background:#081d2b;border-color:rgba(174,213,222,.23);border-radius:9px}.field input:focus,.field textarea:focus,.field select:focus{border-color:#8dcfc7;box-shadow:0 0 0 3px rgba(141,207,199,.11)}
+.cta-band{border-radius:16px;border-color:rgba(152,206,201,.24);background:#123b4b}
+
+/* Premium navy correction: return to the original modern type voice, lose the neon. */
+:root{--black:#06121f;--panel:#0b2031;--panel-2:#102a3e;--line:#294c64;--chrome-100:#f1f6f8;--chrome-300:#b4c6d1;--chrome-500:#7893a4;--blue-300:#91c3df;--blue-500:#36789f;--cyan:#75b8dc}
+body{background:#06121f}body:before{background:radial-gradient(circle at 8% 11%,rgba(49,102,137,.15),transparent 23%),radial-gradient(circle at 92% 62%,rgba(92,103,150,.08),transparent 24%)}
+h1,h2,h3{font-family:'Sora',sans-serif;font-weight:600;letter-spacing:-.045em}
+.eyebrow{color:#9dbbc9}.eyebrow::before{background:#87b9d3}.btn-primary,.submit-btn{background:#80b9da;color:#071927}.btn-primary:hover,.submit-btn:hover{background:#b7d7e8}.btn-quiet{border-color:rgba(165,204,224,.35);color:#d7e8f0}.btn-quiet:hover{border-color:#93c2da;background:rgba(102,157,190,.1)}
+.page-hero{background:linear-gradient(90deg,rgba(6,25,39,.95),rgba(11,35,52,.68)),radial-gradient(circle at 85% 18%,rgba(81,106,154,.13),transparent 29%)}.panel,.check-card,.step,.area-card,.value-item,.price-card,.review-card,.review-page-card,.booking-panel,.pricing-result,.picker-modal{background:#0b2436;border-color:rgba(148,190,213,.16)}.cta-band{border-color:rgba(140,188,211,.25);background:#123249}
+.navbar-right-group>.btn{background:#163b54;color:#e8f1f5;border:1px solid #78a9c4;box-shadow:none}.navbar-right-group>.btn:hover,.navbar-right-group>.btn:focus-visible{background:#204c66;color:#fff;border-color:#a9cede;box-shadow:none}
+
+/* Site-wide premium navy palette — deliberately no cyan/neon treatments. */
+:root{--black:#06131f;--panel:#0b2030;--panel-2:#10283b;--line:#27465d;--chrome-100:#f0f4f5;--chrome-300:#b5c5cd;--chrome-500:#78909e;--blue-300:#9aafbd;--blue-500:#335a78;--cyan:#6f8ea3}
+body{background:#06131f}body:before{background:radial-gradient(circle at 12% 8%,rgba(48,82,111,.13),transparent 24%),radial-gradient(circle at 89% 67%,rgba(71,91,130,.08),transparent 25%)}
+header{background:rgba(6,19,31,.96);border-bottom-color:rgba(155,181,196,.16)}
+.btn-primary,.submit-btn{background:#7898ab;color:#071722;box-shadow:none}.btn-primary:hover,.submit-btn:hover,.btn-primary:focus-visible,.submit-btn:focus-visible{background:#a9bdc8;color:#06131f;box-shadow:none}.btn-quiet{border-color:#58748a;color:#d5e0e4}.btn-quiet:hover,.btn-quiet:focus-visible{border-color:#91aab9;background:rgba(116,148,169,.11);color:#f0f5f6}
+.menu-trigger,.search-trigger,.footer-social a{background:#0c2435;border-color:#3a5b70;color:#d1e0e5}.menu-trigger:hover,.search-trigger:hover,.footer-social a:hover{border-color:#8da7b6;background:#153247}.navbar-right-group>.btn{background:#17354b;color:#edf3f5;border-color:#6f8fa2}.navbar-right-group>.btn:hover,.navbar-right-group>.btn:focus-visible{background:#244b65;border-color:#a6bdc8}
+.page-hero{background:linear-gradient(112deg,rgba(7,24,38,.95),rgba(12,37,55,.72));border-bottom-color:rgba(155,181,196,.14)}.page-hero:before{background:radial-gradient(ellipse 540px 310px at 12% 18%,rgba(58,92,122,.19),transparent 69%)}
+.panel,.check-card,.step,.area-card,.value-item,.price-card,.review-card,.review-page-card,.booking-panel,.pricing-result,.picker-modal{background:#0b2233;border-color:rgba(145,172,188,.18);box-shadow:none}.check-card:hover,.home-link-card:hover,.review-link-card:hover{border-color:#7896a8;box-shadow:none}.check-icon,.step .num{color:#9eb6c2}
+.field input,.field textarea,.field select,.picker-trigger,.pricing-controls select{background:#081a28;border-color:#38576b;color:#e9f0f2}.field input:focus,.field textarea:focus,.field select:focus{border-color:#829fab;box-shadow:0 0 0 3px rgba(122,150,166,.14)}
+.price-row,.form-foot,.picker-timesection{border-color:rgba(149,176,190,.16)}.price-amt,.review-score{color:#b8cbd4}.review-stars{color:#9aafb9}.reviews-summary{border-color:rgba(147,174,188,.2);background:#0d2739}.area-chip{background:#0d2739;border-color:#405f73;color:#d4e0e4}.cta-band{background:#123146;border-color:#4e7185;box-shadow:none}
+.site-banner{background:#4e6d82}.site-banner p{color:#f1f5f6}
