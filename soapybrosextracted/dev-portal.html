@@ -116,9 +116,21 @@
     .portal-grid{grid-template-columns:1fr;}
     .portal-booking-row{grid-template-columns:1fr 1fr; row-gap:4px;}
   }
+
+  /* Premium navy operations dashboard */
+  body.portal-page{padding:38px 24px;background:#06131f;color:#eef3f4;}
+  .portal-dash{max-width:1180px;}
+  .portal-lock{background:#0b2233;border-color:#324f63;border-radius:16px;box-shadow:0 24px 55px rgba(0,0,0,.25)}
+  .portal-lock-icon{background:#102b3f;border-color:#527288;color:#a7bdc8}.portal-lock input{background:#081a28;border-color:#38576b}.portal-lock input:focus{border-color:#8ea9b8}
+  .portal-dash-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:28px;padding:4px 0 25px;border-bottom:1px solid rgba(147,176,191,.18)}
+  .portal-dash-head h1{font-size:clamp(27px,3.5vw,39px);letter-spacing:-.055em}.portal-dash-head p{color:#9fb4bf}.portal-head-meta{display:flex;align-items:center;gap:10px;color:#a8bac3;font:600 11px 'Inter',sans-serif;white-space:nowrap}.portal-head-meta i{width:7px;height:7px;border-radius:50%;background:#89a6b6;display:block}
+  .portal-section{margin-bottom:26px}.portal-section-title{display:flex;align-items:center;justify-content:space-between;color:#9db4c0;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:.08em;margin-bottom:12px}
+  .portal-stats{gap:12px}.portal-stat{background:#0b2233;border-color:rgba(147,176,191,.18);border-radius:12px;padding:20px}.portal-stat .num{font-size:28px}.portal-stat.live .num{color:#bacbd3}.portal-live-dot{background:#8fa7b4;box-shadow:0 0 0 4px rgba(143,167,180,.12)}.portal-stat .label{font-family:'Inter',sans-serif;font-size:10px;color:#8fa6b2}
+  .portal-workspace{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(290px,.8fr);gap:16px;align-items:start}.portal-card,.portal-control,.portal-bookings{background:#0b2233;border-color:rgba(147,176,191,.18);border-radius:12px;box-shadow:none}.portal-bookings{overflow:hidden}.portal-booking-row{grid-template-columns:1.1fr 1.05fr .85fr .95fr .85fr;gap:10px;padding:15px 18px;border-color:rgba(147,176,191,.14)}.portal-booking-row.head{background:#102a3d;color:#98adba;font-family:'Inter',sans-serif;font-size:10px;font-weight:700}.portal-booking-row span.name{color:#eef4f5}.portal-booking-row span{color:#b4c5cd}.portal-empty{padding:30px;color:#8fa6b2}.portal-controls-stack{display:grid;gap:16px}.portal-control{padding:21px;margin:0}.portal-control h3{font-size:17px}.portal-control p{color:#9fb3bd}.portal-status{font-family:'Inter',sans-serif;font-size:10px;border-color:#597489}.portal-status.on{color:#b7cbd5;border-color:#7895a7}.portal-status.off{color:#d6a5a3;border-color:#9c7575}.portal-textarea{background:#081a28;border-color:#38576b;border-radius:9px}.portal-btn{background:#102a3d;border-color:#456479;color:#e4edf0}.portal-btn:hover{border-color:#9bb3bf}.portal-btn.primary{background:#7f9dad;border-color:#7f9dad;color:#081923}.portal-btn.primary:hover{background:#a9c0ca}.portal-btn.danger{color:#d9aaa8;border-color:#936f70}.portal-note{font-family:'Inter',sans-serif;color:#93aab5}.portal-grid{grid-template-columns:1fr 1fr;gap:12px}.portal-card{padding:20px}.portal-card:hover{border-color:#8ca8b7;transform:none}.portal-card h3{font-size:15px}.portal-card p{color:#93aab5}
+  @media(max-width:850px){.portal-workspace{grid-template-columns:1fr}.portal-dash-head{align-items:start;flex-direction:column}.portal-booking-row{grid-template-columns:1fr 1fr 1fr}}@media(max-width:700px){body.portal-page{padding:24px 16px}.portal-stats{grid-template-columns:1fr 1fr}.portal-booking-row{grid-template-columns:1fr 1fr}.portal-booking-row.head{display:none}.portal-booking-row span:before{display:block;margin-bottom:2px;color:#718d9c;font-size:9px;font-weight:700;text-transform:uppercase}.portal-booking-row span:nth-child(1):before{content:'Customer'}.portal-booking-row span:nth-child(2):before{content:'Requested visit'}.portal-booking-row span:nth-child(3):before{content:'Service'}.portal-booking-row span:nth-child(4):before{content:'Vehicle'}.portal-booking-row span:nth-child(5):before{content:'Phone'}}
 </style>
 </head>
-<body>
+<body class="portal-page">
 
   <div class="portal-lock" id="portalLock">
     <div class="portal-lock-icon">
@@ -133,12 +145,12 @@
 
   <div class="portal-dash" id="portalDash">
     <div class="portal-dash-head">
-      <h1>Soapy Bros — Dev Portal</h1>
-      <p>Live site controls, traffic, and quick links.</p>
+      <div><h1>Soapy Bros — Operations</h1><p>Bookings, availability, site controls, and traffic in one place.</p></div>
+      <div class="portal-head-meta"><i></i><span>Private operations dashboard</span></div>
     </div>
 
     <div class="portal-section">
-      <div class="portal-section-title">Traffic</div>
+      <div class="portal-section-title">At a glance</div>
       <div class="portal-stats">
         <div class="portal-stat live">
           <span class="num"><span class="portal-live-dot"></span><span id="statActiveNow">-</span></span>
@@ -153,14 +165,23 @@
           <span class="label">Views all-time</span>
         </div>
         <div class="portal-stat">
-          <span class="num" id="statTopPage">-</span>
-          <span class="label">Top page today</span>
+          <span class="num" id="statBookings">-</span>
+          <span class="label">Recent bookings</span>
         </div>
       </div>
     </div>
 
+    <div class="portal-workspace">
+    <div class="portal-section bookings-section">
+      <div class="portal-section-title"><span>Recent booking requests</span><button class="portal-btn" id="refreshBookingsBtn" type="button">Refresh</button></div>
+      <div class="portal-bookings" id="recentBookings">
+        <div class="portal-empty">Loading recent booking requests…</div>
+      </div>
+    </div>
+
+    <div class="portal-controls-stack">
     <div class="portal-section">
-      <div class="portal-section-title">Controls</div>
+      <div class="portal-section-title">Booking control</div>
 
       <div class="portal-control">
         <div class="portal-control-head">
@@ -187,11 +208,7 @@
       </div>
     </div>
 
-    <div class="portal-section">
-      <div class="portal-section-title">Recent bookings</div>
-      <div class="portal-bookings" id="recentBookings">
-        <div class="portal-empty">Loading...</div>
-      </div>
+    </div>
     </div>
 
     <div class="portal-section">
@@ -285,15 +302,6 @@
           document.getElementById('statActiveNow').textContent = data.activeNow;
           document.getElementById('statToday').textContent = data.pageviewsToday;
           document.getElementById('statAllTime').textContent = data.pageviewsAllTime;
-
-          var top = '-';
-          var max = 0;
-          if (data.topPagesToday){
-            Object.keys(data.topPagesToday).forEach(function(page){
-              if (data.topPagesToday[page] > max){ max = data.topPagesToday[page]; top = page; }
-            });
-          }
-          document.getElementById('statTopPage').textContent = top;
         })
         .catch(function(){
           document.getElementById('statActiveNow').textContent = '-';
@@ -319,24 +327,47 @@
     }
 
     function loadRecentBookings(){
+      var container = document.getElementById('recentBookings');
+      container.innerHTML = '<div class="portal-empty">Loading recent booking requests…</div>';
       fetch(authedUrl({ action: 'recentbookings' }))
         .then(function(res){ return res.json(); })
         .then(function(data){
-          var container = document.getElementById('recentBookings');
           if (!data.bookings || data.bookings.length === 0){
             container.innerHTML = '<div class="portal-empty">No bookings logged yet.</div>';
+            document.getElementById('statBookings').textContent = '0';
             return;
           }
-          var html = '<div class="portal-booking-row head"><span>Name</span><span>Visit</span><span>Car</span><span>Wash</span></div>';
+          document.getElementById('statBookings').textContent = data.bookings.length;
+          var html = '<div class="portal-booking-row head"><span>Customer</span><span>Requested visit</span><span>Service</span><span>Vehicle</span><span>Phone</span></div>';
           data.bookings.forEach(function(b){
-            html += '<div class="portal-booking-row"><span class="name">' + (b.name || '-') + '</span><span>' + (b.lastVisit || '-') + '</span><span>' + (b.carType || '-') + '</span><span>' + (b.wash || '-') + '</span></div>';
+            var requested = formatBookingDate(b.preferredDate || b.date || b.lastVisit || '-');
+            if (b.preferredTime || b.time) requested += ' · ' + (b.preferredTime || b.time);
+            var service = b.service || b.serviceType || b.wash || '-';
+            var vehicle = b.carType || b.vehicle || '-';
+            html += '<div class="portal-booking-row"><span class="name">' + escapeHtml(b.name || '-') + '</span><span>' + escapeHtml(requested) + '</span><span>' + escapeHtml(service) + '</span><span>' + escapeHtml(vehicle) + '</span><span>' + escapeHtml(b.phone || b.phoneNumber || '-') + '</span></div>';
           });
           container.innerHTML = html;
         })
         .catch(function(){
           document.getElementById('recentBookings').innerHTML = '<div class="portal-empty">Could not load bookings.</div>';
+          document.getElementById('statBookings').textContent = '-';
         });
     }
+
+    function escapeHtml(value){
+      return String(value).replace(/[&<>'"]/g, function(character){
+        return {'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character];
+      });
+    }
+
+    function formatBookingDate(value){
+      if (!value || value === '-') return '-';
+      var date = new Date(value);
+      if (isNaN(date.getTime())) return value;
+      return new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).format(date);
+    }
+
+    document.getElementById('refreshBookingsBtn').addEventListener('click', loadRecentBookings);
 
     // ---------- Controls ----------
     document.getElementById('openBookingBtn').addEventListener('click', function(){
