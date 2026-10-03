@@ -3,10 +3,12 @@
 (function () {
   const pages = [
     { title: "Home", url: "index.html", description: "Mobile detailing in Iowa City, Coralville, and North Liberty." },
-    { title: "About", url: "about.html", description: "Three high schoolers bringing the full detail to your driveway." },
-    { title: "Pricing", url: "pricing.html", description: "Final price confirmed once we arrive." },
+    { title: "Services", url: "services.html", description: "What is included in an interior and exterior detail." },
+    { title: "About", url: "about.html", description: "A locally owned mobile detailing business founded by three Iowa City high school students." },
+    { title: "Pricing", url: "pricing.html", description: "Starting prices by vehicle type. Final price confirmed once we see the vehicle." },
     { title: "Book", url: "book.html", description: "Choose a date and time and request your detail." },
     { title: "Reviews", url: "reviews.html", description: "Hear from local customers and Google review highlights." },
+    { title: "FAQ", url: "index.html#faq", description: "Preparing your vehicle, timing, payment, and whether you need to be present." },
     { title: "Contact", url: "contact.html", description: "Call, text, or email Soapy Bros." }
   ];
 

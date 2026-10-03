@@ -3,44 +3,36 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book — Soapy Bros Car Detailing</title>
-<meta name="description" content="Book a mobile car detail in Iowa City, Coralville, or North Liberty.">
+<title>Book | Soapy Bros Car Detailing</title>
+<meta name="description" content="Request a mobile car detail in Iowa City, Coralville, or North Liberty.">
+<meta name="theme-color" content="#05111c">
+<meta name="application-name" content="Soapy Bros">
+<meta property="og:site_name" content="Soapy Bros">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Book | Soapy Bros Car Detailing">
+<meta property="og:description" content="Request a mobile car detail in Iowa City, Coralville, or North Liberty.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="sb.css">
 </head>
 <body>
-
+<div class="site-banner" id="siteBanner" style="display:none;"><p id="siteBannerText"></p></div>
 <header>
-  <nav class="wrap">
+  <nav class="wrap" aria-label="Main">
     <div class="navbar-left">
-      <button class="menu-trigger" id="menuTrigger" aria-label="Open menu" aria-expanded="false">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-      </button>
+      <button class="menu-trigger" id="menuTrigger" aria-label="Open menu" aria-expanded="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
       <a href="index.html" class="brand"><img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing"></a>
-      <div class="nav-links" id="navLinks">
-        <a href="index.html">Home</a>
-        <a href="about.html">About</a>
-        <a href="pricing.html">Pricing</a>
-        <a href="book.html">Book</a>
-        <a href="reviews.html">Reviews</a>
-        <a href="contact.html">Contact</a>
-      </div>
+      <div class="nav-links" id="navLinks"><a href="index.html">Home</a><a href="services.html">Services</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="reviews.html">Reviews</a><a href="contact.html">Contact</a></div>
     </div>
     <div class="navbar-right-group">
       <div class="navbar-search" id="searchWrap">
-        <button class="search-trigger" id="searchTrigger" aria-label="Search">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-        </button>
+        <button class="search-trigger" id="searchTrigger" aria-label="Search the site"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg></button>
         <div class="search-popover" id="searchPopover">
-          <div class="navbar-search-input">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
-            <input type="text" id="siteSearchInput" placeholder="Search the site..." autocomplete="off">
-          </div>
+          <div class="navbar-search-input"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><input type="text" id="siteSearchInput" placeholder="Search the site..." autocomplete="off"></div>
           <div class="search-results" id="searchResults"></div>
         </div>
       </div>
@@ -48,164 +40,115 @@
     </div>
   </nav>
 </header>
-
 <div class="menu-overlay" id="menuOverlay"></div>
-<aside class="menu-drawer" id="menuDrawer">
-  <div class="menu-drawer-header">
-    <img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing">
-    <button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button>
-  </div>
-  <nav class="menu-drawer-links">
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="pricing.html">Pricing</a>
-    <a href="book.html">Book</a>
-    <a href="reviews.html">Reviews</a>
-        <a href="contact.html">Contact</a>
-  </nav>
-  <div class="menu-drawer-footer">
-    <a href="tel:3194710054">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-      319-471-0054
-    </a>
-  </div>
+<aside class="menu-drawer" id="menuDrawer" aria-label="Menu">
+  <div class="menu-drawer-header"><img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing"><button class="menu-close" id="menuClose" aria-label="Close menu">&times;</button></div>
+  <nav class="menu-drawer-links"><a href="index.html">Home</a><a href="services.html">Services</a><a href="pricing.html">Pricing</a><a href="about.html">About</a><a href="reviews.html">Reviews</a><a href="contact.html">Contact</a><a href="book.html">Book</a></nav>
+  <div class="menu-drawer-footer"><a href="tel:3194066159"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 319-406-6159</a></div>
 </aside>
-
 <main>
-
-  <section class="page-hero">
-    <div class="wrap">
-      <span class="eyebrow">Book a detail</span>
-      <h1>Book now.</h1>
-      <p>Send your details and we'll text or call to confirm a time. We'll give the final price once we arrive and see the vehicle.</p>
-    </div>
-  </section>
-
-  <section style="padding-top:0;">
-    <div class="wrap">
+<section class="page-hero"><div class="wrap">
+  <span class="eyebrow">Book a detail</span>
+  <h1>Request your detail.</h1>
+  <p>Send your details and we will text or call to confirm a time. We confirm the final price once we have seen the vehicle.</p>
+</div></section>
+<section class="section" style="padding-top:64px"><div class="wrap">
       <div class="booking-panel" id="bookingPanel">
         <form id="bookingForm" action="https://formsubmit.co/soapybrosic@gmail.com" method="POST">
           <input type="hidden" name="_subject" value="New Soapy Bros booking request">
           <input type="hidden" name="_template" value="table">
-          <input type="text" name="_honey" style="display:none">
-
+          <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <div class="form-grid">
-            <div class="field">
-              <label for="name">Full name</label>
-              <input type="text" id="name" name="Name" placeholder="Your name" required>
-            </div>
-            <div class="field">
-              <label for="phone">Phone number</label>
-              <input type="tel" id="phone" name="Phone" placeholder="319-000-0000" required>
-            </div>
-            <div class="field full email-field">
-              <label for="email">Email (optional)</label>
-              <input type="email" id="email" name="Email" placeholder="you@example.com">
-            </div>
+            <div class="field"><label for="name">Full name</label><input type="text" id="name" name="Name" placeholder="Your name" required autocomplete="name"></div>
+            <div class="field"><label for="phone">Phone number</label><input type="tel" id="phone" name="Phone" placeholder="319-000-0000" required autocomplete="tel"></div>
+            <div class="field full email-field"><label for="email">Email (optional)</label><input type="email" id="email" name="Email" placeholder="you@example.com" autocomplete="email"></div>
             <div class="field full">
               <label>Preferred date &amp; time</label>
               <button type="button" id="openPickerBtn" class="picker-trigger">Choose a date &amp; time</button>
-              <input type="hidden" id="dateInput" name="Preferred date">
-              <input type="hidden" id="timeInput" name="Preferred time">
+              <input type="hidden" id="dateInput" name="Preferred date"><input type="hidden" id="timeInput" name="Preferred time">
               <p class="picker-error" id="pickerError" style="display:none;">Please choose a date and time before submitting.</p>
             </div>
-            <div class="field">
-              <label for="cartype">Car type</label>
-              <select id="cartype" name="Car type" required>
-                <option value="" disabled selected>Select a car type</option>
-                <option value="Sedan">Sedan</option>
-                <option value="SUV">SUV</option>
-                <option value="Minivan">Minivan</option>
-                <option value="Motorcycle">Motorcycle</option>
-                <option value="Truck">Truck</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="service">Service</label>
-              <select id="service" name="Service type" required>
-                <option value="" disabled selected>Select a service</option>
-                <option value="Exterior only">Exterior only</option>
-                <option value="Interior only">Interior only</option>
-                <option value="Interior & exterior">Interior &amp; exterior</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="city">City</label>
-              <select id="city" name="City" required>
-                <option value="" disabled selected>Select a city</option>
-                <option value="Iowa City">Iowa City</option>
-                <option value="Coralville">Coralville</option>
-                <option value="North Liberty">North Liberty</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="zip">Zip code</label>
-              <input type="text" id="zip" name="Zip code" placeholder="52240" inputmode="numeric" pattern="[0-9]{5}" required>
-            </div>
-            <div class="field full">
-              <label for="address">Full address</label>
-              <input type="text" id="address" name="Address" placeholder="Street address for the detail" required>
-            </div>
-            <div class="field full">
-              <label for="notes">Notes (optional)</label>
-              <textarea id="notes" name="Notes" placeholder="Anything else we should know"></textarea>
-            </div>
+            <div class="field"><label for="cartype">Car type</label>
+              <select id="cartype" name="Car type" required><option value="" disabled selected>Select a car type</option><option value="Sedan">Sedan</option><option value="SUV">SUV</option><option value="Minivan">Minivan</option><option value="Motorcycle">Motorcycle</option><option value="Truck">Truck</option></select></div>
+            <div class="field"><label for="service">Service</label>
+              <select id="service" name="Service type" required><option value="" disabled selected>Select a service</option><option value="Exterior only">Exterior only</option><option value="Interior only">Interior only</option><option value="Interior & exterior">Interior &amp; exterior</option></select></div>
+            <div class="field"><label for="city">City</label>
+              <select id="city" name="City" required><option value="" disabled selected>Select a city</option><option value="Iowa City">Iowa City</option><option value="Coralville">Coralville</option><option value="North Liberty">North Liberty</option></select></div>
+            <div class="field"><label for="zip">Zip code</label><input type="text" id="zip" name="Zip code" placeholder="52240" inputmode="numeric" pattern="[0-9]{5}" required autocomplete="postal-code"></div>
+            <div class="field full"><label for="notes">Notes (optional)</label><textarea id="notes" name="Notes" placeholder="Anything else we should know"></textarea></div>
           </div>
-
           <input type="hidden" id="estimateField" name="Starting price">
-
           <div class="quote-box" id="quoteBox">
-            <div>
-              <span class="quote-label">Starting price</span><br>
-              <span class="quote-amt" id="quoteAmt">Select a car type &amp; service</span>
-            </div>
-            <div class="quote-note">This is the starting price. Final price is confirmed once we see the vehicle.</div>
+            <div><span class="quote-label">Starting price</span><br><span class="quote-amt" id="quoteAmt">Select a car type &amp; service</span></div>
+            <div class="quote-note">This is the starting price. The final price is confirmed once we see the vehicle.</div>
           </div>
-
           <div class="form-foot">
-            <p class="form-note">We'll reply by phone to confirm your time and price.</p>
-            <button class="submit-btn" type="submit">Submit Booking</button>
+            <p class="form-note">We will reply by phone or text to confirm your time and price.</p>
+            <button class="submit-btn" type="submit">Submit booking</button>
           </div>
         </form>
       </div>
 
-      <div class="picker-overlay" id="pickerOverlay">
-        <div class="picker-modal">
-          <div class="picker-modal-header">
-            <button type="button" class="picker-nav" id="prevMonthBtn" aria-label="Previous month">&#8249;</button>
-            <span class="picker-month-label" id="monthLabel"></span>
-            <button type="button" class="picker-nav" id="nextMonthBtn" aria-label="Next month">&#8250;</button>
-            <button type="button" class="picker-close" id="closePickerBtn" aria-label="Close">&times;</button>
-          </div>
+      <div class="picker-overlay" id="pickerOverlay"><div class="picker-modal">
+        <div class="picker-modal-header">
+          <button type="button" class="picker-nav" id="prevMonthBtn" aria-label="Previous month">&#8249;</button>
+          <span class="picker-month-label" id="monthLabel"></span>
+          <button type="button" class="picker-nav" id="nextMonthBtn" aria-label="Next month">&#8250;</button>
+          <button type="button" class="picker-close" id="closePickerBtn" aria-label="Close">&times;</button>
+        </div>
+        <div class="picker-weekdays"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+        <div class="picker-grid" id="calendarGrid"></div>
+        <div id="timeSlotSection" class="picker-timesection" style="display:none;"><p class="picker-time-label" id="selectedDateLabel"></p><div class="picker-timegrid" id="timeSlotGrid"></div></div>
+        <p class="picker-loading" id="pickerLoading">Loading availability...</p>
+      </div></div>
 
-          <div class="picker-weekdays">
-            <span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span>
-          </div>
-          <div class="picker-grid" id="calendarGrid"></div>
-
-          <div id="timeSlotSection" class="picker-timesection" style="display:none;">
-            <p class="picker-time-label" id="selectedDateLabel"></p>
-            <div class="picker-timegrid" id="timeSlotGrid"></div>
-          </div>
-
-          <p class="picker-loading" id="pickerLoading">Loading availability...</p>
+      <div class="booking-panel" id="successPanel" style="display:none;text-align:center;">
+        <h2 style="margin-bottom:14px;">Booking submitted</h2>
+        <p style="color:var(--muted);max-width:440px;margin:0 auto;">Thank you. We have your request and will call or text the number you provided to confirm your time and price.</p>
+      </div>
+      <div class="booking-panel" id="closedPanel" style="display:none;text-align:center;">
+        <h2 style="margin-bottom:14px;">Not taking new bookings right now</h2>
+        <p style="color:var(--muted);max-width:440px;margin:0 auto 22px;">We are temporarily not accepting new requests through the site. Call or text us directly and we will see what we can do.</p>
+        <a class="btn btn-primary" href="tel:3194066159">Call or text 319-406-6159</a>
+      </div>
+  </div></section>
+<section class="section" id="faq"><div class="wrap faq-layout">
+    <div>
+      <span class="eyebrow">FAQ</span>
+      <h2>Before your visit.</h2>
+      <p class="lede">The essentials on preparing your vehicle, timing, and payment. Anything else, call or text 319-406-6159.</p>
+    </div>
+    <div class="faq-list"><details class="faq-item"><summary>What do I need to do to get ready?</summary><div class="ans">Please remove personal belongings from the vehicle, or place them in the center console or glove box. We also need access to water and electricity.</div></details><details class="faq-item"><summary>How long does a detail take?</summary><div class="ans">An interior detail takes about 1 hour 30 minutes, and an exterior detail takes about 45 minutes. Depending on the condition of the vehicle, it may take longer.</div></details><details class="faq-item"><summary>What if my car is excessively dirty?</summary><div class="ans">Additional charges may apply depending on the severity. We confirm the final price once we have seen the vehicle.</div></details><details class="faq-item"><summary>How do I pay?</summary><div class="ans">We accept cash, Apple Pay, Venmo, Zelle, and Cash App.</div></details><details class="faq-item"><summary>Do I need to be present?</summary><div class="ans">No. As long as water and power are accessible and we have your keys, you do not need to be present.</div></details></div>
+  </div></section>
+</main>
+<footer>
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing">
+        <p>Locally owned mobile car detailing, serving Iowa City, Coralville, and North Liberty.</p>
+      </div>
+      <div><h4>Explore</h4><ul>
+        <li><a href="index.html">Home</a></li><li><a href="services.html">Services</a></li><li><a href="pricing.html">Pricing</a></li>
+        <li><a href="about.html">About</a></li><li><a href="reviews.html">Reviews</a></li></ul></div>
+      <div><h4>Plan a visit</h4><ul>
+        <li><a href="book.html">Book a detail</a></li><li><a href="process.html">How it works</a></li>
+        <li><a href="area.html">Service area</a></li><li><a href="index.html#faq">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+      <div><h4>Get in touch</h4><ul>
+        <li><a href="tel:3194066159">319-406-6159</a></li><li><a href="mailto:soapybrosic@gmail.com">soapybrosic@gmail.com</a></li></ul>
+        <div class="footer-social">
+          <a href="https://www.instagram.com/soapybro.s/?hl=en" target="_blank" rel="noopener" aria-label="Soapy Bros on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://www.tiktok.com/@soapybros1" target="_blank" rel="noopener" aria-label="Soapy Bros on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M16.5 3c.4 2.2 1.9 3.9 4.1 4.2v2.8c-1.5.1-2.9-.3-4.1-1.1v6.4c0 3.1-2.5 5.7-5.7 5.7S5.1 18.4 5.1 15.3s2.5-5.7 5.7-5.7c.3 0 .6 0 .9.1v2.9c-.3-.1-.6-.2-.9-.2-1.6 0-2.8 1.3-2.8 2.8s1.3 2.8 2.8 2.8 2.9-1.2 2.9-2.8V3h2.8z"/></svg></a>
         </div>
       </div>
-
-      <div class="booking-panel" id="successPanel" style="display:none; text-align:center;">
-        <h2 style="font-size:clamp(26px,3vw,34px); margin-bottom:14px;">Booking Submitted</h2>
-        <p style="color:var(--chrome-300); font-size:16px; max-width:440px; margin:0 auto;">Thanks — we've got your request. We'll call or text you at the number you gave us to confirm your time and price.</p>
-      </div>
-
-      <div class="booking-panel" id="closedPanel" style="display:none; text-align:center;">
-        <h2 style="font-size:clamp(26px,3vw,34px); margin-bottom:14px;">Not taking new bookings right now</h2>
-        <p style="color:var(--chrome-300); font-size:16px; max-width:440px; margin:0 auto 20px;">We're temporarily not accepting new requests through the site. Call or text us directly and we'll see what we can do.</p>
-        <a class="btn btn-primary" href="tel:3194710054">Call 319-471-0054</a>
-      </div>
     </div>
-  </section>
-
-  <script>
+    <div class="footer-base"><span>&copy; 2026 Soapy Bros Car Detailing</span><span>Iowa City, Iowa</span></div>
+  </div>
+</footer>
+<script src="site.js"></script>
+<script src="sb.js"></script>
+<script>document.addEventListener('sbconfig',function(e){var c=e.detail,b=document.getElementById('siteBanner'),t=document.getElementById('siteBannerText');if(!b||!t)return;if(c.siteMessage&&c.siteMessage.trim()!==''){t.textContent=c.siteMessage;b.style.display='flex';document.body.classList.add('has-banner')}else{b.style.display='none';document.body.classList.remove('has-banner')}});</script>
+<script>
     const prices = {
       Sedan: { "Exterior only": 55, "Interior only": 75, "Interior & exterior": 100 },
       SUV: { "Exterior only": 70, "Interior only": 90, "Interior & exterior": 125 },
@@ -500,35 +443,13 @@
       }, 500);
     });
   </script>
-
-</main>
-
-<footer>
-  <div class="wrap footer-row">
-    <img src="soapy-bros-logo.png" alt="Soapy Bros Car Detailing">
-    <span class="phone">319-471-0054</span>
-    <a class="footer-email" href="mailto:soapybrosic@gmail.com">soapybrosic@gmail.com</a>
-    <div class="footer-social">
-      <a href="https://www.instagram.com/soapybro.s/?hl=en" target="_blank" rel="noopener" aria-label="Soapy Bros on Instagram">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>
-      </a>
-      <a href="https://www.tiktok.com/@soapybros1" target="_blank" rel="noopener" aria-label="Soapy Bros on TikTok">
-        <svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M16.5 3c.4 2.2 1.9 3.9 4.1 4.2v2.8c-1.5.1-2.9-.3-4.1-1.1v6.4c0 3.1-2.5 5.7-5.7 5.7S5.1 18.4 5.1 15.3s2.5-5.7 5.7-5.7c.3 0 .6 0 .9.1v2.9c-.3-.1-.6-.2-.9-.2-1.6 0-2.8 1.3-2.8 2.8s1.3 2.8 2.8 2.8 2.9-1.2 2.9-2.8V3h2.8z"/></svg>
-      </a>
-    </div>
-    <p>© 2026 SOAPY BROS CAR DETAILING</p>
-  </div>
-</footer>
-
-<script src="site.js"></script>
 <script>
   document.addEventListener('sbconfig', function (e) {
     var config = e.detail;
     if (config.bookingsOpen === false) {
-      var bookingPanel = document.getElementById('bookingPanel');
-      var closedPanel = document.getElementById('closedPanel');
-      if (bookingPanel) bookingPanel.style.display = 'none';
-      if (closedPanel) closedPanel.style.display = 'block';
+      var bp = document.getElementById('bookingPanel'), cp = document.getElementById('closedPanel');
+      if (bp) bp.style.display = 'none';
+      if (cp) cp.style.display = 'block';
     }
   });
 </script>
