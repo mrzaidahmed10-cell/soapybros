@@ -419,3 +419,99 @@ footer li a:hover{color:var(--text)}
   .footer-grid{grid-template-columns:1fr;gap:34px}
   .page-hero{padding-bottom:48px}
 }
+
+/* =====================================================================
+   Round 2: estimator card, motion, mobile action bar, FAQ page, extras
+   ===================================================================== */
+.skip{position:absolute;left:12px;top:-60px;z-index:20000;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:8px;font-weight:600;transition:top .2s}
+.skip:focus{top:12px}
+
+/* hero: copy + price estimator */
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(300px,.85fr);gap:64px;align-items:center}
+.hero-copy .lede{max-width:520px}
+.quote-card{
+  justify-self:end;width:100%;max-width:400px;display:grid;gap:18px;padding:30px;
+  background:linear-gradient(160deg,rgba(14,42,67,.72),rgba(7,25,41,.78));
+  border:1px solid var(--line-2);border-radius:20px;
+  backdrop-filter:blur(16px) saturate(1.2);-webkit-backdrop-filter:blur(16px) saturate(1.2);
+  box-shadow:0 30px 70px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.07);
+}
+.qc-row{display:grid;gap:8px}
+.qc-row label{font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.qc-out{display:flex;align-items:baseline;justify-content:space-between;padding-top:6px;border-top:1px solid var(--line)}
+.qc-out span{font:500 11px 'IBM Plex Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.qc-out strong{font:600 44px/1 'Sora',sans-serif;letter-spacing:-.03em}
+.quote-card .btn{width:100%}
+.quote-card > p{font-size:12.5px;color:var(--dim);text-align:center}
+
+/* cursor light across the beads */
+.hero-light{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;
+  background:radial-gradient(460px circle at var(--lx,70%) var(--ly,40%),rgba(160,220,255,.2),transparent 62%);mix-blend-mode:screen}
+.hero.lit .hero-light{opacity:1}
+
+/* hero facts become live counters */
+.hero-facts .wrap{grid-template-columns:repeat(4,1fr)}
+.fact b{font-size:19px;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.fact span{font-size:12.5px}
+
+/* checklist ticks animate in when the card scrolls into view */
+html.js .inc-list li{color:var(--muted);transition:color .5s}
+html.js .inc-list li::after{opacity:0;transform:scale(.3) rotate(-25deg);transition:opacity .45s var(--ease),transform .55s var(--ease)}
+html.js .inc-list li.ticked{color:var(--text)}
+html.js .inc-list li.ticked::after{opacity:.95;transform:none}
+.inc-card{transition:border-color .4s,transform .4s var(--ease)}
+.inc-card:hover{border-color:var(--line-2);transform:translateY(-3px)}
+
+/* preparing + service area */
+.prep-area{background:var(--bg-2);border-block:1px solid var(--line)}
+.prep-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:72px;align-items:start}
+.prep-grid h2{font-size:clamp(28px,3.2vw,40px);margin:16px 0 28px}
+.prep-list{list-style:none;counter-reset:prep;border-top:1px solid var(--line-2)}
+.prep-list li{counter-increment:prep;display:grid;grid-template-columns:44px 1fr;gap:2px 8px;padding:20px 0;border-bottom:1px solid var(--line)}
+.prep-list li::before{content:counter(prep,decimal-leading-zero);grid-row:1/3;font:500 12px 'IBM Plex Mono',monospace;color:var(--accent);padding-top:3px}
+.prep-list b{font:600 17px 'Sora',sans-serif}
+.prep-list span{color:var(--muted);font-size:15px}
+.area-panel{padding:34px;border:1px solid var(--line-2);border-radius:var(--r-lg);background:linear-gradient(160deg,var(--surface-2),var(--surface));display:grid;gap:16px;justify-items:start}
+.area-panel h3{font-size:24px}
+.area-panel p{color:var(--muted);font-size:15px}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips span{padding:8px 16px;border:1px solid var(--line-2);border-radius:999px;font-size:13.5px;color:var(--accent-2);background:rgba(108,198,242,.06)}
+
+/* FAQ page */
+.faq-more{padding-top:26px}
+.faq-page{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(260px,.7fr);gap:64px;align-items:start}
+.faq-side{position:sticky;top:110px;padding:30px;border:1px solid var(--line-2);border-radius:var(--r-lg);background:var(--surface);display:grid;gap:14px;justify-items:start}
+.faq-side h3{font-size:22px}
+.faq-side p{color:var(--muted);font-size:15px}
+.faq-side-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+
+/* quick-action bar for phones */
+.mobile-bar{display:none}
+@media (max-width:680px){
+  .mobile-bar{position:fixed;left:0;right:0;bottom:0;z-index:800;display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(5,17,28,.94);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-top:1px solid var(--line-2)}
+  .mobile-bar a{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 10px;border-radius:999px;font:600 14px 'Inter',sans-serif}
+  .mobile-bar svg{width:16px;height:16px}
+  .mb-call{border:1px solid var(--line-2);color:var(--text)}
+  .mb-book{background:var(--accent);color:var(--accent-ink)}
+  body{padding-bottom:72px}
+}
+
+@media (max-width:980px){
+  .hero-grid{grid-template-columns:1fr;gap:40px}
+  .quote-card{justify-self:start;max-width:460px}
+  .prep-grid,.faq-page{grid-template-columns:1fr;gap:40px}
+  .faq-side{position:static}
+}
+@media (max-width:680px){
+  .hero-facts .wrap{grid-template-columns:1fr 1fr}
+  .fact,.fact + .fact{padding:16px 14px 16px 0;border-left:0;border-top:0}
+  .fact:nth-child(even){padding-left:16px;border-left:1px solid var(--line)}
+  .fact:nth-child(n+3){border-top:1px solid var(--line)}
+  .fact b{font-size:17px}
+  .quote-card{padding:24px}
+}
+
+/* round 2 refinements */
+.hero h1{font-size:clamp(36px,4.7vw,62px);max-width:none}
+.fact b span{font-size:inherit;color:inherit;display:inline}
+.hero h1,.page-hero h1,.section-head h2{text-wrap:balance}

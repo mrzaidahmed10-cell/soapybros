@@ -139,3 +139,127 @@
     });
   }
 })();
+
+/* =====================================================================
+   Round 2: soap-suds artwork, cursor light, estimator, tick + counter motion
+   ===================================================================== */
+(function () {
+  'use strict';
+  document.documentElement.classList.add('js');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Soap suds (generated artwork, replaces the old stock photo) ---------- */
+  function rng(seed) {
+    var s = seed >>> 0;
+    return function () { s = (s + 0x6D2B79F5) >>> 0; var t = s; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+  }
+  function drawSuds(canvas) {
+    var p = canvas.parentElement, w = p.clientWidth, h = p.clientHeight;
+    if (!w || !h) return;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.round(w * dpr); canvas.height = Math.round(h * dpr);
+    var ctx = canvas.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, w, h);
+    var rand = rng(parseInt(canvas.dataset.seed || '5', 10));
+    var n = Math.round(Math.min(260, (w * h) / 520)), bubbles = [];
+    for (var i = 0; i < n; i++) {
+      var v = 1 - Math.pow(rand(), 2.1);                 // foam gathers toward the bottom
+      var y = h * (0.12 + v * 0.95), x = rand() * w;
+      var r = 3 + Math.pow(rand(), 2.4) * (10 + v * 30);
+      bubbles.push({ x: x, y: y, r: r });
+    }
+    bubbles.sort(function (a, b) { return b.r - a.r; });  // big first, small on top
+    bubbles.forEach(function (b) {
+      var x = b.x, y = b.y, r = b.r, g;
+      g = ctx.createRadialGradient(x - r * .2, y - r * .25, r * .05, x, y, r);
+      g.addColorStop(0, 'rgba(180,225,255,.03)'); g.addColorStop(.7, 'rgba(120,190,235,.08)'); g.addColorStop(1, 'rgba(190,232,255,.3)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(x, y, r, 0, 6.2832); ctx.fill();
+      // thin-film iridescence on the rim
+      var ig = ctx.createLinearGradient(x - r, y - r, x + r, y + r);
+      ig.addColorStop(0, 'rgba(120,225,255,.55)'); ig.addColorStop(.5, 'rgba(170,150,255,.28)'); ig.addColorStop(1, 'rgba(255,170,215,.4)');
+      ctx.lineWidth = Math.max(.7, r * .05); ctx.strokeStyle = ig;
+      ctx.beginPath(); ctx.arc(x, y, r - ctx.lineWidth / 2, 0, 6.2832); ctx.stroke();
+      if (r > 4) {
+        ctx.fillStyle = 'rgba(255,255,255,.85)';
+        ctx.save(); ctx.translate(x - r * .38, y - r * .4); ctx.rotate(-.7);
+        ctx.beginPath(); ctx.ellipse(0, 0, r * .2, r * .09, 0, 0, 6.2832); ctx.fill(); ctx.restore();
+        ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = Math.max(.6, r * .04);
+        ctx.beginPath(); ctx.arc(x, y, r * .72, 1.1, 1.9); ctx.stroke();
+      }
+    });
+  }
+  var suds = Array.prototype.slice.call(document.querySelectorAll('canvas.suds'));
+  function renderSuds() { suds.forEach(drawSuds); }
+  var st; window.addEventListener('resize', function () { clearTimeout(st); st = setTimeout(renderSuds, 160); });
+  renderSuds();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(renderSuds);
+
+  /* ---------- Cursor light on the hero ---------- */
+  var hero = document.querySelector('.hero');
+  if (hero && !reduce && window.matchMedia('(pointer: fine)').matches) {
+    hero.addEventListener('pointermove', function (e) {
+      var r = hero.getBoundingClientRect();
+      hero.style.setProperty('--lx', (e.clientX - r.left) + 'px');
+      hero.style.setProperty('--ly', (e.clientY - r.top) + 'px');
+      hero.classList.add('lit');
+    });
+    hero.addEventListener('pointerleave', function () { hero.classList.remove('lit'); });
+  }
+
+  /* ---------- Starting-price estimator in the hero ---------- */
+  var prices = {
+    Sedan: { 'Exterior only': 55, 'Interior only': 75, 'Interior & exterior': 100 },
+    SUV: { 'Exterior only': 70, 'Interior only': 90, 'Interior & exterior': 125 },
+    Minivan: { 'Exterior only': 70, 'Interior only': 120, 'Interior & exterior': 155 },
+    Motorcycle: { 'Exterior only': 75, 'Interior only': 75 },
+    Truck: { 'Exterior only': 95, 'Interior only': 115, 'Interior & exterior': 150 }
+  };
+  var vSel = document.getElementById('hqVehicle'), sSel = document.getElementById('hqService'),
+      out = document.getElementById('hqPrice'), book = document.getElementById('hqBook');
+  if (vSel && sSel && out && book) {
+    var update = function () {
+      var v = vSel.value;
+      Array.prototype.forEach.call(sSel.options, function (o) {
+        var ok = prices[v][o.value] !== undefined; o.disabled = !ok; o.hidden = !ok;
+      });
+      if (prices[v][sSel.value] === undefined) sSel.value = 'Exterior only';
+      out.textContent = '$' + prices[v][sSel.value];
+      book.href = 'book.html?vehicle=' + encodeURIComponent(v) + '&service=' + encodeURIComponent(sSel.value);
+    };
+    vSel.addEventListener('change', update); sSel.addEventListener('change', update); update();
+  }
+
+  /* ---------- Checklist ticks, one after another ---------- */
+  var lists = document.querySelectorAll('.inc-list');
+  if (lists.length) {
+    if (reduce || !('IntersectionObserver' in window)) {
+      Array.prototype.forEach.call(document.querySelectorAll('.inc-list li'), function (li) { li.classList.add('ticked'); });
+    } else {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (en) {
+          if (!en.isIntersecting) return;
+          Array.prototype.forEach.call(en.target.children, function (li, i) { setTimeout(function () { li.classList.add('ticked'); }, 140 + i * 170); });
+          io.unobserve(en.target);
+        });
+      }, { threshold: 0.35 });
+      Array.prototype.forEach.call(lists, function (l) { io.observe(l); });
+    }
+  }
+
+  /* ---------- Count-up numbers ---------- */
+  var counters = document.querySelectorAll('[data-count]');
+  if (counters.length && !reduce && 'IntersectionObserver' in window) {
+    var co = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target, end = parseInt(el.dataset.count, 10), t0 = performance.now(), dur = 1100;
+        (function step(now) {
+          var k = Math.min(1, (now - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+          el.textContent = Math.round(end * e);
+          if (k < 1) requestAnimationFrame(step);
+        })(t0);
+        co.unobserve(el);
+      });
+    }, { threshold: 0.6 });
+    Array.prototype.forEach.call(counters, function (c) { c.textContent = '0'; co.observe(c); });
+  }
+})();
