@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -26,6 +26,7 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress-bar" aria-hidden="true"><span></span></div>
 <div class="site-banner" id="siteBanner" style="display:none;"><p id="siteBannerText"></p></div>
 <header>
   <nav class="wrap" aria-label="Main">
@@ -53,18 +54,16 @@
   <div class="menu-drawer-footer"><a href="tel:3194066159"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 319-406-6159</a></div>
 </aside>
 <main id="main">
-<section class="page-hero"><div class="wrap">
-  <span class="eyebrow">About</span>
+<section class="page-hero"><canvas class="beads page-beads" data-seed="30" data-density=".55" data-bias="right" aria-hidden="true"></canvas><div class="wrap">
   <h1>Built by three. Driven by quality.</h1>
   
 </div></section>
 <section class="section" style="padding-top:72px"><div class="wrap about-wrap">
     <div class="about-aside reveal">
-      <span class="eyebrow">Who we are</span>
       <div style="margin-top:26px;border-top:1px solid var(--line-2)">
-        <div style="padding:20px 0;border-bottom:1px solid var(--line)"><b style="font:600 17px Sora,sans-serif">Locally owned</b><div style="color:var(--muted);font-size:14.5px;margin-top:4px">Founded in Iowa City</div></div>
-        <div style="padding:20px 0;border-bottom:1px solid var(--line)"><b style="font:600 17px Sora,sans-serif">Mobile service</b><div style="color:var(--muted);font-size:14.5px;margin-top:4px">At your home or office</div></div>
-        <div style="padding:20px 0;border-bottom:1px solid var(--line)"><b style="font:600 17px Sora,sans-serif">Serving</b><div style="color:var(--muted);font-size:14.5px;margin-top:4px">Iowa City, Coralville &amp; North Liberty</div></div>
+        <div style="padding:20px 0;border-bottom:1px solid var(--line)"><b style="font-weight:600;font-size:17px">Locally owned</b><div style="color:var(--muted);font-size:14.5px;margin-top:4px">Founded in Iowa City</div></div>
+        <div style="padding:20px 0;border-bottom:1px solid var(--line)"><b style="font-weight:600;font-size:17px">Mobile service</b><div style="color:var(--muted);font-size:14.5px;margin-top:4px">At your home or office</div></div>
+        <div style="padding:20px 0;border-bottom:1px solid var(--line)"><b style="font-weight:600;font-size:17px">Serving</b><div style="color:var(--muted);font-size:14.5px;margin-top:4px">Iowa City, Coralville &amp; North Liberty</div></div>
       </div>
     </div>
     <div class="about-copy reveal reveal-delay-1">
@@ -75,9 +74,17 @@
       <div class="about-sign">Your car. Our care. Right at your doorstep.</div>
     </div>
   </div></section>
+<section class="section values"><div class="wrap">
+    <div class="section-head stack"><div><h2>Honesty, quality, and attention to detail.</h2></div></div>
+    <div class="value-grid">
+      <div class="value reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.7 2.7L16 9.5"/></svg><h3>Honesty</h3><p>We confirm the final price once we have seen the vehicle, so there are no surprises.</p></div>
+      <div class="value reveal reveal-delay-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.6 5.6 6 .8-4.4 4.2 1.1 6L12 16.7 6.7 19.6l1.1-6L3.4 9.4l6-.8z"/></svg><h3>Quality</h3><p>A set checklist on every visit, from the first vacuum pass to the dry, streak-free finish.</p></div>
+      <div class="value reveal reveal-delay-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg><h3>Attention to detail</h3><p>From the hard-to-reach crevices to the final wipe-down.</p></div>
+    </div>
+  </div></section>
 <section class="cta"><div class="wrap"><div class="cta-shell">
-    <div style="position:relative;z-index:1"><span class="eyebrow">Book a detail</span><h2>Book your detail.</h2><p>Choose a time that suits you and we will confirm by phone or text.</p></div>
-    <div class="cta-actions"><a class="btn btn-primary" href="book.html">Book now <span class="arr" aria-hidden="true">&rarr;</span></a><a class="phone-link" href="tel:3194066159">Or call or text 319-406-6159</a></div>
+    <div style="position:relative;z-index:1"><h2>Book your detail.</h2><p>Choose a time that suits you and we will confirm by phone or text.</p></div>
+    <div class="cta-actions"><a class="btn btn-primary" href="book.html">Book now </a><a class="phone-link" href="tel:3194066159">Call 319-406-6159</a><a class="phone-link" href="sms:+13194066159">Or send a text</a></div>
   </div></div></section>
 </main>
 <footer>
@@ -107,6 +114,7 @@
 <div class="mobile-bar" aria-label="Quick actions"><a class="mb-call" href="tel:3194066159"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call or text</a><a class="mb-book" href="book.html">Book now</a></div>
 <script src="site.js"></script>
 <script src="sb.js"></script>
+<script src="sb-motion.js"></script>
 <script>document.addEventListener('sbconfig',function(e){var c=e.detail,b=document.getElementById('siteBanner'),t=document.getElementById('siteBannerText');if(!b||!t)return;if(c.siteMessage&&c.siteMessage.trim()!==''){t.textContent=c.siteMessage;b.style.display='flex';document.body.classList.add('has-banner')}else{b.style.display='none';document.body.classList.remove('has-banner')}});</script>
 </body>
 </html>

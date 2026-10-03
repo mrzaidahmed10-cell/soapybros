@@ -263,3 +263,82 @@
     Array.prototype.forEach.call(counters, function (c) { c.textContent = '0'; co.observe(c); });
   }
 })();
+
+
+/* =====================================================================
+   Round 3: checklist ring, next opening, contact form
+   ===================================================================== */
+(function () {
+  'use strict';
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Checklist ring: fills as each step scrolls past the reading line ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-ring]'), function (root) {
+    var items = Array.prototype.slice.call(root.querySelectorAll('li.ck'));
+    var countEl = root.querySelector('[data-ring-count]'), ring = root.querySelector('.ring');
+    var ticking = false;
+    function set(n) {
+      items.forEach(function (li, i) { li.classList.toggle('done', i < n); });
+      if (countEl) countEl.textContent = n;
+      if (ring) ring.style.setProperty('--p', (n / items.length * 100).toFixed(1));
+    }
+    function update() {
+      ticking = false;
+      if (reduce) { set(items.length); return; }
+      var line = window.innerHeight * 0.62, n = 0;
+      items.forEach(function (li, i) { if (li.getBoundingClientRect().top < line) n = i + 1; });
+      set(n);
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    update();
+  });
+
+  /* ---------- Next opening, read from the same availability feed as the booking page ---------- */
+  var chip = document.getElementById('hqNext');
+  if (chip) {
+    var FEED = 'https://script.google.com/macros/s/AKfycby90m4IQJhWy7z5Kw3shswafCO1HoFDO_2JradATRSS5F9nUiYGRIHvDXzaWBClXUvR/exec';
+    var same = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
+    fetch(FEED).then(function (r) { return r.json(); }).then(function (data) {
+      var busy = (data.busy || []).map(function (e) { return { s: new Date(e.start), e: new Date(e.end), all: !!e.allDay }; });
+      var now = new Date(), soonest = new Date(now.getTime() + 2 * 3600 * 1000);
+      for (var d = 0; d < 21; d++) {
+        var day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
+        for (var h = 8; h < 20; h += 3) {
+          var a = new Date(day); a.setHours(h, 0, 0, 0);
+          var b = new Date(day); b.setHours(h + 3, 0, 0, 0);
+          if (a < soonest) continue;
+          var taken = busy.some(function (ev) { return ev.all ? same(ev.s, day) : (a < ev.e && b > ev.s); });
+          if (taken) continue;
+          chip.textContent = 'Next opening: ' + a.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) +
+            ' at ' + a.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+          chip.hidden = false;
+          return;
+        }
+      }
+    }).catch(function () { /* feed unavailable: the chip simply stays hidden */ });
+  }
+
+  /* ---------- Contact form ---------- */
+  var form = document.getElementById('contactForm');
+  if (form) {
+    var status = document.getElementById('contactStatus'), btn = form.querySelector('.submit-btn');
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      btn.disabled = true; btn.textContent = 'Sending...'; status.className = 'form-status'; status.textContent = '';
+      fetch(form.action.replace('formsubmit.co/', 'formsubmit.co/ajax/'), { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+        .then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+        .then(function (res) {
+          if (res.ok && String(res.j.success) === 'true') {
+            form.reset(); status.textContent = 'Message sent. We will get back to you soon.';
+          } else { throw new Error('send failed'); }
+        })
+        .catch(function () {
+          status.className = 'form-status err';
+          status.textContent = 'The message did not send. Please call or text 319-406-6159.';
+        })
+        .then(function () { btn.disabled = false; btn.textContent = 'Send message'; });
+    });
+  }
+})();

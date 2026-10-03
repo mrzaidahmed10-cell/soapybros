@@ -18,7 +18,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sora:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
 <link rel="icon" type="image/png" sizes="512x512" href="favicon-512x512.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
@@ -26,6 +26,7 @@
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
+<div class="progress-bar" aria-hidden="true"><span></span></div>
 <div class="site-banner" id="siteBanner" style="display:none;"><p id="siteBannerText"></p></div>
 <header>
   <nav class="wrap" aria-label="Main">
@@ -53,8 +54,7 @@
   <div class="menu-drawer-footer"><a href="tel:3194066159"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 319-406-6159</a></div>
 </aside>
 <main id="main">
-<section class="page-hero"><div class="wrap">
-  <span class="eyebrow">How it works</span>
+<section class="page-hero"><canvas class="beads page-beads" data-seed="93" data-density=".55" data-bias="right" aria-hidden="true"></canvas><div class="wrap">
   <h1>Three steps to a clean car.</h1>
   <p>No drop-off and no pickup. We arrive at your location at the time you book.</p>
 </div></section>
@@ -67,15 +67,14 @@
   </div></section>
 <section class="section" id="faq"><div class="wrap faq-layout">
     <div>
-      <span class="eyebrow">FAQ</span>
       <h2>Before your visit.</h2>
       <p class="lede">The essentials on preparing your vehicle, timing, and payment. Anything else, call or text 319-406-6159.</p>
     </div>
     <div class="faq-list"><details class="faq-item"><summary>What do I need to do to get ready?</summary><div class="ans">Please remove personal belongings from the vehicle, or place them in the center console or glove box. We also need access to water and electricity.</div></details><details class="faq-item"><summary>How long does a detail take?</summary><div class="ans">An interior detail takes about 1 hour 30 minutes, and an exterior detail takes about 45 minutes. Depending on the condition of the vehicle, it may take longer.</div></details><details class="faq-item"><summary>What if my car is excessively dirty?</summary><div class="ans">Additional charges may apply depending on the severity. We confirm the final price once we have seen the vehicle.</div></details><details class="faq-item"><summary>How do I pay?</summary><div class="ans">We accept cash, Apple Pay, Venmo, Zelle, and Cash App.</div></details><details class="faq-item"><summary>Do I need to be present?</summary><div class="ans">No. As long as water and power are accessible and we have your keys, you do not need to be present.</div></details></div>
   </div></section>
 <section class="cta"><div class="wrap"><div class="cta-shell">
-    <div style="position:relative;z-index:1"><span class="eyebrow">Book a detail</span><h2>Ready to get started?</h2><p>Pick a time that works for you. We confirm by phone or text.</p></div>
-    <div class="cta-actions"><a class="btn btn-primary" href="book.html">Book now <span class="arr" aria-hidden="true">&rarr;</span></a><a class="phone-link" href="tel:3194066159">Or call or text 319-406-6159</a></div>
+    <div style="position:relative;z-index:1"><h2>Ready to get started?</h2><p>Pick a time that works for you. We confirm by phone or text.</p></div>
+    <div class="cta-actions"><a class="btn btn-primary" href="book.html">Book now </a><a class="phone-link" href="tel:3194066159">Call 319-406-6159</a><a class="phone-link" href="sms:+13194066159">Or send a text</a></div>
   </div></div></section>
 </main>
 <footer>
@@ -105,6 +104,7 @@
 <div class="mobile-bar" aria-label="Quick actions"><a class="mb-call" href="tel:3194066159"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> Call or text</a><a class="mb-book" href="book.html">Book now</a></div>
 <script src="site.js"></script>
 <script src="sb.js"></script>
+<script src="sb-motion.js"></script>
 <script>document.addEventListener('sbconfig',function(e){var c=e.detail,b=document.getElementById('siteBanner'),t=document.getElementById('siteBannerText');if(!b||!t)return;if(c.siteMessage&&c.siteMessage.trim()!==''){t.textContent=c.siteMessage;b.style.display='flex';document.body.classList.add('has-banner')}else{b.style.display='none';document.body.classList.remove('has-banner')}});</script>
 </body>
 </html>
