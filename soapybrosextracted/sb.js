@@ -207,14 +207,16 @@
 
   /* ---------- Starting-price estimator in the hero ---------- */
   var prices = {
-    Sedan: { 'Exterior only': 55, 'Interior only': 75, 'Interior & exterior': 100 },
-    SUV: { 'Exterior only': 70, 'Interior only': 90, 'Interior & exterior': 125 },
+    Sedan: { 'Exterior only': 40, 'Interior only': 75, 'Interior & exterior': 100 },
+    SUV: { 'Exterior only': 70, 'Interior only': 100, 'Interior & exterior': 125 },
     Minivan: { 'Exterior only': 70, 'Interior only': 120, 'Interior & exterior': 155 },
     Motorcycle: { 'Exterior only': 75, 'Interior only': 75 },
     Truck: { 'Exterior only': 95, 'Interior only': 115, 'Interior & exterior': 150 }
   };
   var vSel = document.getElementById('hqVehicle'), sSel = document.getElementById('hqService'),
-      out = document.getElementById('hqPrice'), book = document.getElementById('hqBook');
+      out = document.getElementById('hqPrice'), book = document.getElementById('hqBook'),
+      addon = document.getElementById('hqAddon'), timeEl = document.getElementById('hqTime');
+  var times = { 'Exterior only': 'Typical time: about 45 minutes.', 'Interior only': 'Typical time: about 1 hour 30 minutes.', 'Interior & exterior': 'Typical time: about 1 hour 30 minutes for the interior and 45 minutes for the exterior.' };
   if (vSel && sSel && out && book) {
     var update = function () {
       var v = vSel.value;
@@ -222,10 +224,11 @@
         var ok = prices[v][o.value] !== undefined; o.disabled = !ok; o.hidden = !ok;
       });
       if (prices[v][sSel.value] === undefined) sSel.value = 'Exterior only';
-      out.textContent = '$' + prices[v][sSel.value];
-      book.href = 'book.html?vehicle=' + encodeURIComponent(v) + '&service=' + encodeURIComponent(sSel.value);
+      out.textContent = '$' + (prices[v][sSel.value] + (addon && addon.checked ? 25 : 0));
+      if (timeEl) timeEl.textContent = times[sSel.value] || '';
+      book.href = 'book.html?vehicle=' + encodeURIComponent(v) + '&service=' + encodeURIComponent(sSel.value) + (addon && addon.checked ? '&addon=1' : '');
     };
-    vSel.addEventListener('change', update); sSel.addEventListener('change', update); update();
+    vSel.addEventListener('change', update); sSel.addEventListener('change', update); if (addon) addon.addEventListener('change', update); update();
   }
 
   /* ---------- Checklist ticks, one after another ---------- */
@@ -302,12 +305,12 @@
     var same = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
     fetch(FEED).then(function (r) { return r.json(); }).then(function (data) {
       var busy = (data.busy || []).map(function (e) { return { s: new Date(e.start), e: new Date(e.end), all: !!e.allDay }; });
-      var now = new Date(), soonest = new Date(now.getTime() + 2 * 3600 * 1000);
+      var now = new Date(), soonest = now;
       for (var d = 0; d < 21; d++) {
         var day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-        for (var h = 8; h < 20; h += 3) {
+        for (var h = 8; h < 20; h += 2) {
           var a = new Date(day); a.setHours(h, 0, 0, 0);
-          var b = new Date(day); b.setHours(h + 3, 0, 0, 0);
+          var b = new Date(day); b.setHours(h + 2, 0, 0, 0);
           if (a < soonest) continue;
           var taken = busy.some(function (ev) { return ev.all ? same(ev.s, day) : (a < ev.e && b > ev.s); });
           if (taken) continue;
@@ -341,4 +344,11 @@
         .then(function () { btn.disabled = false; btn.textContent = 'Send message'; });
     });
   }
+
+  /* ---------- Team photo: shown only once gallery/team.jpg exists ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-team]'), function (fig) {
+    var img = fig.querySelector('img'), probe = new Image();
+    probe.onload = function () { img.src = probe.src; fig.hidden = false; };
+    probe.src = 'gallery/team.jpg';
+  });
 })();

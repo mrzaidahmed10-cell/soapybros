@@ -755,3 +755,25 @@ html:not(.js) .ck-box path{stroke-dashoffset:0}
 .qc-title{font-size:21px;margin-bottom:-2px}
 
 .prep-list li{grid-template-columns:1fr}.prep-list li::before{display:none}
+
+/* ---------- Round 4 ---------- */
+.hero-surface{background:radial-gradient(900px 520px at 78% 8%,rgba(90,180,235,.14),transparent 70%),linear-gradient(180deg,#071a2b,#05111c)}
+.hero-grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(169,222,250,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(169,222,250,.05) 1px,transparent 1px);background-size:56px 56px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 85%);mask-image:linear-gradient(180deg,#000,transparent 85%)}
+canvas.beads{display:none!important}
+.page-hero{background:radial-gradient(700px 300px at 85% 0,rgba(90,180,235,.12),transparent 70%),linear-gradient(180deg,#071a2b,#06131f)}
+.hero-facts .wrap{grid-template-columns:repeat(5,1fr)}
+.fact{padding-right:16px}
+.fact + .fact{padding-left:22px}
+.addon{display:flex;gap:10px;align-items:center;font-size:14.5px;color:var(--muted);cursor:pointer;margin:6px 0}
+.addon input{width:18px;height:18px;accent-color:#6cc4f4;flex:none}
+.addon b{color:var(--text);font-weight:600;margin-left:4px}
+.qc-time{font-size:13.5px;color:var(--muted);margin:0}
+.contact-grid.solo{grid-template-columns:minmax(0,720px)}
+.map-frame{position:relative;border:1px solid var(--line-2);border-radius:8px;overflow:hidden;background:#0a2236;aspect-ratio:16/10;width:100%}
+.map-frame .map-fallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px;text-align:center;padding:20px}
+.map-embed{position:absolute;inset:0;width:100%;height:100%;border:0;filter:invert(.92) hue-rotate(188deg) saturate(.75) brightness(.95) contrast(.95)}
+.area-map-big{display:grid;gap:14px;margin-bottom:28px}
+.area-map-big .map-frame{aspect-ratio:21/9}
+.team-photo{margin:0 0 28px;border-radius:8px;overflow:hidden;border:1px solid var(--line-2)}
+.team-photo img{display:block;width:100%;height:auto}
+@media (max-width:1000px){.hero-facts .wrap{grid-template-columns:1fr 1fr}.area-map-big .map-frame{aspect-ratio:4/3}}

@@ -54,7 +54,7 @@
   <div class="menu-drawer-footer"><a href="tel:3194066159"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg> 319-406-6159</a></div>
 </aside>
 <main id="main">
-<section class="page-hero"><canvas class="beads page-beads" data-seed="8" data-density=".55" data-bias="right" aria-hidden="true"></canvas><div class="wrap">
+<section class="page-hero"><div class="wrap">
   <h1>Request your detail.</h1>
   <p>Send your details and we will text or call to confirm a time. We confirm the final price once we have seen the vehicle.</p>
 </div></section>
@@ -83,10 +83,11 @@
             <div class="field"><label for="zip">Zip code</label><input type="text" id="zip" name="Zip code" placeholder="52240" inputmode="numeric" pattern="[0-9]{5}" required autocomplete="postal-code"></div>
             <div class="field full"><label for="notes">Notes (optional)</label><textarea id="notes" name="Notes" placeholder="Anything else we should know"></textarea></div>
           </div>
-          <input type="hidden" id="estimateField" name="Starting price">
+          <label class="addon"><input type="checkbox" id="addonBox" name="Add-on" value="Seat covers or carpet set (+$25)"><span>Add seat covers or carpet set <b>+$25</b></span></label>
+          <input type="hidden" id="estimateField" name="Starting quote">
           <div class="quote-box" id="quoteBox">
-            <div><span class="quote-label">Starting price</span><br><span class="quote-amt" id="quoteAmt">Select a car type &amp; service</span></div>
-            <div class="quote-note">This is the starting price. The final price is confirmed once we see the vehicle.</div>
+            <div><span class="quote-label">Starting quote</span><br><span class="quote-amt" id="quoteAmt">Select a car type &amp; service</span></div>
+            <div class="quote-note">This is the starting quote. The final price is confirmed once we see the vehicle.</div>
           </div>
           <div class="form-foot">
             <p class="form-note">We will reply by phone or text to confirm your time and price.</p>
@@ -111,6 +112,8 @@
       <div class="booking-panel" id="successPanel" style="display:none;text-align:center;">
         <h2 style="margin-bottom:14px;">Booking submitted</h2>
         <p style="color:var(--muted);max-width:440px;margin:0 auto;">Thank you. We have your request and will call or text the number you provided to confirm your time and price.</p>
+        <p style="color:var(--muted);max-width:440px;margin:14px auto 22px;">Have questions about preparing your vehicle, what is included, or payment? Check our FAQ for answers.</p>
+        <a class="btn btn-primary" href="faq.html">Read the FAQ</a>
       </div>
       <div class="booking-panel" id="closedPanel" style="display:none;text-align:center;">
         <h2 style="margin-bottom:14px;">Not taking new bookings right now</h2>
@@ -142,7 +145,7 @@
       <div><h4>Get in touch</h4><ul>
         <li><a href="tel:3194066159">319-406-6159</a></li><li><a href="mailto:soapybrosic@gmail.com">soapybrosic@gmail.com</a></li></ul>
         <div class="footer-social">
-          <a href="https://www.instagram.com/soapybro.s/?hl=en" target="_blank" rel="noopener" aria-label="Soapy Bros on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
+          <a href="https://www.instagram.com/soapybrosic/?hl=en" target="_blank" rel="noopener" aria-label="Soapy Bros on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg></a>
           <a href="https://www.tiktok.com/@soapybros1" target="_blank" rel="noopener" aria-label="Soapy Bros on TikTok"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M16.5 3c.4 2.2 1.9 3.9 4.1 4.2v2.8c-1.5.1-2.9-.3-4.1-1.1v6.4c0 3.1-2.5 5.7-5.7 5.7S5.1 18.4 5.1 15.3s2.5-5.7 5.7-5.7c.3 0 .6 0 .9.1v2.9c-.3-.1-.6-.2-.9-.2-1.6 0-2.8 1.3-2.8 2.8s1.3 2.8 2.8 2.8 2.9-1.2 2.9-2.8V3h2.8z"/></svg></a>
         </div>
       </div>
@@ -157,8 +160,8 @@
 <script>document.addEventListener('sbconfig',function(e){var c=e.detail,b=document.getElementById('siteBanner'),t=document.getElementById('siteBannerText');if(!b||!t)return;if(c.siteMessage&&c.siteMessage.trim()!==''){t.textContent=c.siteMessage;b.style.display='flex';document.body.classList.add('has-banner')}else{b.style.display='none';document.body.classList.remove('has-banner')}});</script>
 <script>
     const prices = {
-      Sedan: { "Exterior only": 55, "Interior only": 75, "Interior & exterior": 100 },
-      SUV: { "Exterior only": 70, "Interior only": 90, "Interior & exterior": 125 },
+      Sedan: { "Exterior only": 40, "Interior only": 75, "Interior & exterior": 100 },
+      SUV: { "Exterior only": 70, "Interior only": 100, "Interior & exterior": 125 },
       Minivan: { "Exterior only": 70, "Interior only": 120, "Interior & exterior": 155 },
       Motorcycle: { "Exterior only": 75, "Interior only": 75 },
       Truck: { "Exterior only": 95, "Interior only": 115, "Interior & exterior": 150 }
@@ -168,6 +171,7 @@
     const serviceEl = document.getElementById('service');
     const quoteAmt = document.getElementById('quoteAmt');
     const estimateField = document.getElementById('estimateField');
+    const addonEl = document.getElementById('addonBox');
 
     function updateServiceOptions(){
       const car = carTypeEl.value;
@@ -187,9 +191,9 @@
       const car = carTypeEl.value;
       const service = serviceEl.value;
       if (car && service && prices[car] && prices[car][service] !== undefined){
-        const amt = prices[car][service];
+        const amt = prices[car][service] + (addonEl && addonEl.checked ? 25 : 0);
         quoteAmt.textContent = '$' + amt.toFixed(2);
-        estimateField.value = '$' + amt.toFixed(2) + ' (' + car + ', ' + service + ')';
+        estimateField.value = '$' + amt.toFixed(2) + ' (' + car + ', ' + service + (addonEl && addonEl.checked ? ', with seat covers or carpet set' : '') + ')';
       } else {
         quoteAmt.textContent = 'Select a car type & service';
         estimateField.value = '';
@@ -198,6 +202,8 @@
 
     carTypeEl.addEventListener('change', updateQuote);
     serviceEl.addEventListener('change', updateQuote);
+    addonEl.addEventListener('change', updateQuote);
+    if (new URLSearchParams(window.location.search).get('addon') === '1') addonEl.checked = true;
 
     const prefillParams = new URLSearchParams(window.location.search);
     const prefillVehicle = prefillParams.get('vehicle');
@@ -230,7 +236,7 @@
 
     const BUSINESS_START_HOUR = 8;   // 8 AM
     const BUSINESS_END_HOUR = 20;    // 8 PM
-    const SLOT_LENGTH_HOURS = 3;     // booking windows are 3 hours each
+    const SLOT_LENGTH_HOURS = 2;     // booking blocks are 2 hours each
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     let busyEvents = [];
@@ -242,6 +248,7 @@
 
     function loadBusyEvents(){
       pickerLoading.style.display = 'block';
+      window.__busyAt = Date.now();
       fetch(sheetWebAppUrl)
         .then(function(res){ return res.json(); })
         .then(function(data){
@@ -332,7 +339,7 @@
         const slotStart = new Date(dateObj); slotStart.setHours(hour, 0, 0, 0);
         const slotEnd = new Date(dateObj); slotEnd.setHours(hour + SLOT_LENGTH_HOURS, 0, 0, 0);
 
-        const isBusy = busyEvents.some(function(ev){
+        const isBusy = slotStart.getTime() <= Date.now() || busyEvents.some(function(ev){
           if (ev.allDay) return sameDay(ev.start, dateObj);
           return slotStart < ev.end && slotEnd > ev.start;
         });
@@ -382,7 +389,7 @@
         viewYear = now.getFullYear();
         viewMonth = now.getMonth();
       }
-      if (!busyLoaded){
+      if (!busyLoaded || Date.now() - (window.__busyAt || 0) > 30000){
         loadBusyEvents();
       } else {
         renderCalendar();
