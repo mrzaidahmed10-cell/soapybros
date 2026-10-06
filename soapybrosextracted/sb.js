@@ -351,4 +351,44 @@
     probe.onload = function () { img.src = probe.src; fig.hidden = false; };
     probe.src = 'gallery/team.jpg';
   });
+
+  /* ---------- Our work: filters and lightbox ---------- */
+  var grid = document.querySelector('[data-work]');
+  if (grid) {
+    Array.prototype.forEach.call(document.querySelectorAll('.work-filters .chip'), function (chip) {
+      chip.addEventListener('click', function () {
+        var f = chip.getAttribute('data-filter');
+        Array.prototype.forEach.call(document.querySelectorAll('.work-filters .chip'), function (c) { c.classList.toggle('is-on', c === chip); });
+        Array.prototype.forEach.call(grid.querySelectorAll('.work-item'), function (it) { it.hidden = !(f === 'all' || it.getAttribute('data-kind') === f); });
+      });
+    });
+  }
+  var opens = Array.prototype.slice.call(document.querySelectorAll('.work-open'));
+  if (opens.length) {
+    var box = document.createElement('div');
+    box.className = 'lightbox'; box.hidden = true; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Photo viewer');
+    box.innerHTML = '<button type="button" class="lb-close" aria-label="Close">&times;</button><button type="button" class="lb-nav lb-prev" aria-label="Previous photo">&#8249;</button><img alt=""><button type="button" class="lb-nav lb-next" aria-label="Next photo">&#8250;</button><p class="lb-cap"></p>';
+    document.body.appendChild(box);
+    var lbImg = box.querySelector('img'), lbCap = box.querySelector('.lb-cap'), cur = 0, lastFocus = null;
+    var visible = function () { return opens.filter(function (b) { return !b.closest('.work-item').hidden; }); };
+    var show = function (i) {
+      var list = visible(); if (!list.length) return;
+      cur = (i + list.length) % list.length;
+      var b = list[cur]; lbImg.src = b.getAttribute('data-full'); lbImg.alt = b.querySelector('img').alt; lbCap.textContent = b.querySelector('img').alt;
+    };
+    var close = function () { box.hidden = true; document.body.classList.remove('lb-open'); if (lastFocus) lastFocus.focus(); };
+    opens.forEach(function (b) {
+      b.addEventListener('click', function () {
+        lastFocus = b; var list = visible(); box.hidden = false; document.body.classList.add('lb-open'); show(list.indexOf(b)); box.querySelector('.lb-close').focus();
+      });
+    });
+    box.querySelector('.lb-close').addEventListener('click', close);
+    box.querySelector('.lb-prev').addEventListener('click', function () { show(cur - 1); });
+    box.querySelector('.lb-next').addEventListener('click', function () { show(cur + 1); });
+    box.addEventListener('click', function (e) { if (e.target === box) close(); });
+    document.addEventListener('keydown', function (e) {
+      if (box.hidden) return;
+      if (e.key === 'Escape') close(); else if (e.key === 'ArrowLeft') show(cur - 1); else if (e.key === 'ArrowRight') show(cur + 1);
+    });
+  }
 })();

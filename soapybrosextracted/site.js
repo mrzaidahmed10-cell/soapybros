@@ -8,6 +8,7 @@
     { title: "Pricing", url: "pricing.html", description: "Starting prices by vehicle type. Final price confirmed once we see the vehicle." },
     { title: "Book", url: "book.html", description: "Choose a date and time and request your detail." },
     { title: "Reviews", url: "reviews.html", description: "Hear from local customers and Google review highlights." },
+    { title: "Our work", url: "work.html", description: "Photos of vehicles we have detailed around Iowa City, Coralville, and North Liberty." },
     { title: "FAQ", url: "faq.html", description: "Preparing your vehicle, timing, payment, and whether you need to be present." },
     { title: "Contact", url: "contact.html", description: "Call, text, or email Soapy Bros." }
   ];
