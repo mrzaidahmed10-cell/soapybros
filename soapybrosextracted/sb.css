@@ -844,3 +844,7 @@ body.lb-open{overflow:hidden}
 .bav-clip figcaption.after{background:var(--accent);color:var(--accent-ink)}
 .bav-ctl{text-align:center;margin-top:22px}
 @media (max-width:520px){.bav{gap:10px}.bav-clip figcaption{left:8px;top:8px;padding:4px 10px;font-size:13px}}
+.work-social{display:flex;flex-wrap:wrap;align-items:center;gap:12px 14px;margin-bottom:28px;padding:16px 20px;border:1px solid var(--line-2);border-radius:8px;background:var(--surface)}
+.work-social p{margin:0 auto 0 0;font-size:16px;font-weight:600}
+.work-social .btn{display:inline-flex;align-items:center;gap:8px}
+.work-social .btn svg{width:18px;height:18px}
