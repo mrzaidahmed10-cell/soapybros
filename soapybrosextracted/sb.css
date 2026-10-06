@@ -829,3 +829,18 @@ body.lb-open{overflow:hidden}
 .work-set .work-open img{height:100%;object-fit:cover}
 @media (max-width:900px){.work-set{grid-template-columns:1fr 1fr}}
 .hero-photo{background-position:50% 62%}
+
+/* ---------- Round 7 ---------- */
+.hero-photo{background-position:50% 58%}
+.work-bar{display:flex;flex-wrap:wrap;gap:14px 28px;align-items:center;justify-content:space-between;margin-bottom:8px}
+.work-bar .work-filters{margin:0}
+.work-jump{display:flex;gap:8px;flex-wrap:wrap}
+.work-jump a.chip{text-decoration:none;font-size:13px;padding:7px 14px}
+.work-jump a[hidden],.work-car[hidden],.work-group[hidden]{display:none}
+.bav{display:grid;grid-template-columns:repeat(2,minmax(0,340px));gap:20px;justify-content:center}
+.bav-clip{margin:0;position:relative;border-radius:8px;overflow:hidden;border:1px solid var(--line-2);background:#000}
+.bav-clip video{display:block;width:100%;height:auto;aspect-ratio:9/16;object-fit:cover}
+.bav-clip figcaption{position:absolute;left:12px;top:12px;padding:6px 14px;border-radius:999px;background:rgba(5,17,28,.78);font:600 14px var(--font);backdrop-filter:blur(6px)}
+.bav-clip figcaption.after{background:var(--accent);color:var(--accent-ink)}
+.bav-ctl{text-align:center;margin-top:22px}
+@media (max-width:520px){.bav{gap:10px}.bav-clip figcaption{left:8px;top:8px;padding:4px 10px;font-size:13px}}

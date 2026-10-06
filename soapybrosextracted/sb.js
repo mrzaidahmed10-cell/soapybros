@@ -353,13 +353,21 @@
   });
 
   /* ---------- Our work: filters and lightbox ---------- */
-  var grid = document.querySelector('[data-work]');
-  if (grid) {
-    Array.prototype.forEach.call(document.querySelectorAll('.work-filters .chip'), function (chip) {
+  var cars = Array.prototype.slice.call(document.querySelectorAll('.work-car'));
+  if (cars.length) {
+    var chips = Array.prototype.slice.call(document.querySelectorAll('.work-filters .chip'));
+    chips.forEach(function (chip) {
       chip.addEventListener('click', function () {
         var f = chip.getAttribute('data-filter');
-        Array.prototype.forEach.call(document.querySelectorAll('.work-filters .chip'), function (c) { c.classList.toggle('is-on', c === chip); });
-        Array.prototype.forEach.call(grid.querySelectorAll('.work-item'), function (it) { it.hidden = !(f === 'all' || it.getAttribute('data-kind') === f); });
+        chips.forEach(function (c) { c.classList.toggle('is-on', c === chip); });
+        cars.forEach(function (car) {
+          var any = false;
+          Array.prototype.forEach.call(car.querySelectorAll('.work-group'), function (g) {
+            var show = f === 'all' || g.getAttribute('data-kind') === f; g.hidden = !show; if (show) any = true;
+          });
+          car.hidden = !any;
+          var link = document.querySelector('.work-jump a[href="#' + car.id + '"]'); if (link) link.hidden = !any;
+        });
       });
     });
   }
@@ -370,7 +378,7 @@
     box.innerHTML = '<button type="button" class="lb-close" aria-label="Close">&times;</button><button type="button" class="lb-nav lb-prev" aria-label="Previous photo">&#8249;</button><img alt=""><button type="button" class="lb-nav lb-next" aria-label="Next photo">&#8250;</button><p class="lb-cap"></p>';
     document.body.appendChild(box);
     var lbImg = box.querySelector('img'), lbCap = box.querySelector('.lb-cap'), cur = 0, lastFocus = null;
-    var visible = function () { return opens.filter(function (b) { return !b.closest('.work-item').hidden; }); };
+    var visible = function () { return opens.filter(function (b) { return b.offsetParent !== null; }); };
     var show = function (i) {
       var list = visible(); if (!list.length) return;
       cur = (i + list.length) % list.length;
@@ -391,4 +399,24 @@
       if (e.key === 'Escape') close(); else if (e.key === 'ArrowLeft') show(cur - 1); else if (e.key === 'ArrowRight') show(cur + 1);
     });
   }
+
+  /* ---------- Before / after videos: play together, loop together ---------- */
+  Array.prototype.forEach.call(document.querySelectorAll('[data-bav]'), function (root) {
+    var vids = Array.prototype.slice.call(root.querySelectorAll('video')), btn = document.querySelector('[data-bav-toggle]');
+    var ended = 0, playing = false, reduceMo = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var play = function () { playing = true; vids.forEach(function (v) { var p = v.play(); if (p && p.catch) p.catch(function () {}); }); if (btn) btn.textContent = 'Pause both'; };
+    var pause = function () { playing = false; vids.forEach(function (v) { v.pause(); }); if (btn) btn.textContent = 'Play both'; };
+    vids.forEach(function (v) {
+      v.addEventListener('ended', function () {
+        ended++;
+        if (ended >= vids.length) { ended = 0; vids.forEach(function (x) { x.currentTime = 0; }); if (playing) play(); }
+      });
+    });
+    if (btn) btn.addEventListener('click', function () { if (playing) pause(); else play(); });
+    if (reduceMo || !('IntersectionObserver' in window)) { if (btn) btn.textContent = 'Play both'; return; }
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { if (!playing && !root.__paused) play(); } else if (playing) { pause(); } });
+    }, { threshold: 0.45 }).observe(root);
+    if (btn) btn.addEventListener('click', function () { root.__paused = !playing; });
+  });
 })();
