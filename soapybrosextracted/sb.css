@@ -815,3 +815,17 @@ body.lb-open{overflow:hidden}
 @media (max-width:1000px){.hero-surface::after{background:linear-gradient(180deg,rgba(5,17,28,.85) 0%,rgba(5,17,28,.55) 45%,rgba(5,17,28,.9) 100%)}.hero-photo{background-position:50% 30%}}
 @media (min-width:1001px){.hero-photo{background-size:auto 112%;background-position:100% 30%}.hero-surface{background-color:#05111c}.hero-surface::after{background:linear-gradient(90deg,#05111c 0%,rgba(5,17,28,.9) 26%,rgba(5,17,28,.35) 52%,rgba(5,17,28,.1) 100%),linear-gradient(0deg,rgba(5,17,28,.95) 0%,transparent 26%),linear-gradient(180deg,rgba(5,17,28,.75) 0%,transparent 18%)}}
 @media (min-width:1001px){.hero-photo{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 24%);mask-image:linear-gradient(90deg,transparent 0,#000 24%)}}
+/* Round 6: Mustang photo runs the full width of the hero */
+.hero-photo{background:url(gallery/hero-mustang.jpg) 50% 50%/cover no-repeat;-webkit-mask-image:none;mask-image:none}
+.hero-surface::after{background:linear-gradient(90deg,rgba(5,17,28,.86) 0%,rgba(5,17,28,.58) 34%,rgba(5,17,28,.1) 68%,rgba(5,17,28,.22) 100%),linear-gradient(0deg,rgba(5,17,28,.9) 0%,transparent 22%),linear-gradient(180deg,rgba(5,17,28,.6) 0%,transparent 16%)}
+@media (max-width:1000px){.hero-surface::after{background:linear-gradient(180deg,rgba(5,17,28,.8) 0%,rgba(5,17,28,.5) 45%,rgba(5,17,28,.9) 100%)}.hero-photo{background-position:62% 50%}}
+.work-car{padding-top:8px;margin-top:44px}
+.work-car:first-of-type{margin-top:8px}
+.work-car h2{font-size:clamp(26px,3vw,38px);margin-bottom:6px}
+.work-sub{font-size:13.5px;font-weight:600;color:var(--muted);margin:22px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.work-set{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.work-set .work-item{margin:0}
+.work-set .work-open{aspect-ratio:4/5}
+.work-set .work-open img{height:100%;object-fit:cover}
+@media (max-width:900px){.work-set{grid-template-columns:1fr 1fr}}
+.hero-photo{background-position:50% 62%}
