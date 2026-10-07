@@ -66,12 +66,12 @@
           <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
           <div class="form-grid">
             <div class="field"><label for="name">Full name</label><input type="text" id="name" name="Name" placeholder="Your name" required autocomplete="name"></div>
-            <div class="field"><label for="phone">Phone number</label><input type="tel" id="phone" name="Phone" placeholder="319-000-0000" required autocomplete="tel"></div>
+            <div class="field"><label for="phone">Phone number</label><input type="tel" id="phone" name="Phone" placeholder="Your phone number" required autocomplete="tel"></div>
             <div class="field full email-field"><label for="email">Email (optional)</label><input type="email" id="email" name="Email" placeholder="you@example.com" autocomplete="email"></div>
             <div class="field full">
               <label>Preferred date &amp; time</label>
               <button type="button" id="openPickerBtn" class="picker-trigger">Choose a date &amp; time</button>
-              <input type="hidden" id="dateInput" name="Preferred date"><input type="hidden" id="timeInput" name="Preferred time">
+              <input type="hidden" id="dateInput" name="Preferred date"><input type="hidden" id="timeInput" name="Preferred time"><input type="hidden" id="apptField" name="Appointment"><input type="hidden" id="slotEndField" name="Slot end"><input type="hidden" name="Slot length" value="2 hours">
               <p class="picker-error" id="pickerError" style="display:none;">Please choose a date and time before submitting.</p>
             </div>
             <div class="field"><label for="cartype">Car type</label>
@@ -384,6 +384,10 @@
       const dd = pad(dateObj.getDate());
       dateInput.value = yyyy + '-' + mm + '-' + dd;
       timeInput.value = pad(hour) + ':00';
+      const endHour = hour + SLOT_LENGTH_HOURS;
+      const fmtH = function(hh){ return new Date(2000, 0, 1, hh).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' }); };
+      document.getElementById('slotEndField').value = pad(endHour) + ':00';
+      document.getElementById('apptField').value = dateObj.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' }) + ', ' + fmtH(hour) + ' to ' + fmtH(endHour);
 
       const dateLabel = dateObj.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
       const timeLabel = new Date(dateObj.getFullYear(), dateObj.getMonth(), dateObj.getDate(), hour).toLocaleTimeString('en-US', { hour:'numeric', minute:'2-digit' });
