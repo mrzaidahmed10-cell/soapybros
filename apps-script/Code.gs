@@ -312,6 +312,7 @@ function doGet(e) {
   var action = p.action || '';
   try {
     if (action === 'config') return json_(getConfig_());
+    if (action === 'debug') return json_(debugInfo_());
     if (action === 'analytics') { requireToken_(p.token); return json_(getAnalytics_()); }
     if (action === 'recentbookings') { requireToken_(p.token); return json_({ bookings: recentBookings_() }); }
     return json_({ busy: busyEvents_() });
@@ -392,26 +393,44 @@ function calendar_() {
   return found.length ? found[0] : CalendarApp.getDefaultCalendar();
 }
 function busyEvents_() {
+  var tz = 'America/Chicago';
   var from = new Date();
   from.setHours(0, 0, 0, 0);
   var to = new Date(from.getTime() + SB_BUSY_DAYS * 86400000);
   var out = [];
-  calendar_().getEvents(from, to).forEach(function (ev) {
-    if (ev.getMyStatus && ev.getMyStatus() === CalendarApp.GuestStatus.NO) return;
-    if (ev.isAllDayEvent()) {
-      // one entry per day so multi-day blocks grey out every day
-      var d = new Date(ev.getAllDayStartDate());
-      var end = new Date(ev.getAllDayEndDate());
-      while (d < end) {
-        var nx = new Date(d.getTime() + 86400000);
-        out.push({ start: d.toISOString(), end: nx.toISOString(), allDay: true });
-        d = nx;
+  var events = calendar_().getEvents(from, to);
+  events.forEach(function (ev) {
+    try {
+      if (ev.isAllDayEvent()) {
+        // one entry per day so multi-day blocks grey out every day (dates read in Chicago time)
+        var d = new Date(ev.getAllDayStartDate());
+        var end = new Date(ev.getAllDayEndDate());
+        var guard = 0;
+        while (d < end && guard++ < 120) {
+          var day = Utilities.formatDate(d, tz, 'yyyy-MM-dd');
+          out.push({ start: day + 'T00:00:00', end: day + 'T23:59:59', allDay: true, day: day });
+          d = new Date(d.getTime() + 86400000);
+        }
+      } else {
+        out.push({ start: ev.getStartTime().toISOString(), end: ev.getEndTime().toISOString(), allDay: false });
       }
-    } else {
-      out.push({ start: ev.getStartTime().toISOString(), end: ev.getEndTime().toISOString(), allDay: false });
-    }
+    } catch (err) { /* skip a problem event, keep the rest */ }
   });
   return out;
+}
+
+// Open  <your /exec URL>?action=debug  in a browser to see what the script sees.
+function debugInfo_() {
+  var cals = CalendarApp.getCalendarsByName(SB_CALENDAR_NAME);
+  var cal = calendar_();
+  var busy = busyEvents_();
+  return {
+    scriptTimeZone: Session.getScriptTimeZone(),
+    calendarsNamedSoapyBros: cals.length,
+    usingCalendar: cal.getName(),
+    busyEntries: busy.length,
+    firstFew: busy.slice(0, 5)
+  };
 }
 
 // ---------- bookings ----------
