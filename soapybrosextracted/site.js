@@ -194,7 +194,7 @@
 
   // ---------- Analytics beacon + site config ----------
   // Shared with book.html's Apps Script Web App.
-  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycby90m4IQJhWy7z5Kw3shswafCO1HoFDO_2JradATRSS5F9nUiYGRIHvDXzaWBClXUvR/exec';
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz596YZ_lMfVCTglc7JPBuccRJjZYkYSh87iX6CPYFz7tkVnJ9n4sq37qGxF5PUxHwC/exec';
   const HEARTBEAT_INTERVAL_MS = 45000;
 
   function getSessionId() {

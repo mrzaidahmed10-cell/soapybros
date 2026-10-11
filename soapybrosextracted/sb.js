@@ -301,7 +301,7 @@
   /* ---------- Next opening, read from the same availability feed as the booking page ---------- */
   var chip = document.getElementById('hqNext');
   if (chip) {
-    var FEED = 'https://script.google.com/macros/s/AKfycby90m4IQJhWy7z5Kw3shswafCO1HoFDO_2JradATRSS5F9nUiYGRIHvDXzaWBClXUvR/exec';
+    var FEED = 'https://script.google.com/macros/s/AKfycbz596YZ_lMfVCTglc7JPBuccRJjZYkYSh87iX6CPYFz7tkVnJ9n4sq37qGxF5PUxHwC/exec';
     var same = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
     fetch(FEED).then(function (r) { return r.json(); }).then(function (data) {
       var busy = (data.busy || []).map(function (e) { return { s: new Date(e.start), e: new Date(e.end), all: !!e.allDay }; });
