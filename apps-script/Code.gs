@@ -217,7 +217,7 @@ function formatBookings_(sh) {
 
   applyWidths_(sh, BOOK_COLS);
   sh.setFrozenRows(5);
-  sh.setFrozenColumns(3);
+  sh.setFrozenColumns(0);   // merged title spans every column, so columns cannot be frozen
   if (sh.getFilter()) sh.getFilter().remove();
   sh.getRange(5, 1, last - 4, N).createFilter();
   sh.setTabColor(SB_ACCENT);
