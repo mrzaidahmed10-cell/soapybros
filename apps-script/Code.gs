@@ -80,7 +80,16 @@ var METHODS = ['Cash', 'Card', 'Venmo', 'Zelle', 'Cash App', 'Check', 'Other'];
 function onOpen() {
   SpreadsheetApp.getUi().createMenu('Soapy Bros')
     .addItem('Re-apply formatting', 'setupSoapyBrosSheet')
+    .addItem('Grant calendar access', 'authorizeSoapyBros')
     .addToUi();
+}
+
+// Run this once to grant Calendar access (the permission popup appears when you run it).
+function authorizeSoapyBros() {
+  var cal = calendar_();
+  var n = cal.getEvents(new Date(), new Date(Date.now() + 7 * 86400000)).length;
+  SpreadsheetApp.getActiveSpreadsheet().getName();
+  Logger.log('Calendar "' + cal.getName() + '" is reachable. Events in the next 7 days: ' + n);
 }
 
 function setupSoapyBrosSheet() {
