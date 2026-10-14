@@ -48,12 +48,22 @@ var BOOK_COLS = [
   ['Time',      135, 'left'],
   ['Vehicle',    80, 'left'],
   ['Service',   120, 'left'],
-  ['Add-on',     62, 'center'],
+  ['Add-ons',   150, 'left'],
   ['Quote',      72, 'right'],
   ['Address',   160, 'left'],
   ['City',       95, 'left'],
   ['Zip',        55, 'center'],
-  ['Notes',     190, 'left']
+  ['Notes',     150, 'left']
+];
+var INC_COLS = [
+  ['Date',            110, 'left'],
+  ['Customer',        150, 'left'],
+  ['Service',         160, 'left'],
+  ['Vehicle',          90, 'left'],
+  ['Paid to',         120, 'left'],
+  ['Amount',          100, 'right'],
+  ['Payment method',  130, 'left'],
+  ['Notes',           220, 'left']
 ];
 var EXP_COLS = [
   ['Date',           100, 'left'],
@@ -81,6 +91,7 @@ function onOpen() {
   SpreadsheetApp.getUi().createMenu('Soapy Bros')
     .addItem('Re-apply formatting', 'setupSoapyBrosSheet')
     .addItem('Grant calendar access', 'authorizeSoapyBros')
+    .addItem('Sync income from completed bookings', 'syncIncome_')
     .addToUi();
 }
 
@@ -104,9 +115,12 @@ function setupSoapyBrosSheet() {
       bookings = ss.insertSheet('Bookings', 0);
     }
   }
+  var income = ss.getSheetByName('Income') || ss.insertSheet('Income');
   var expenses = ss.getSheetByName('Expenses') || ss.insertSheet('Expenses');
   formatBookings_(bookings);
+  formatIncome_(income);
   formatExpenses_(expenses);
+  syncIncome_();
   ss.setActiveSheet(bookings);
   SpreadsheetApp.flush();
 }
@@ -251,10 +265,10 @@ function formatExpenses_(sh) {
   kpi_(sh, 3, 3, 4, '="This month:  "&TEXT(SUMIFS(' + amt + ',' + dt + ',">="&DATE(YEAR(TODAY()),MONTH(TODAY()),1)),"$#,##0.00")', '#fff4d6');
   kpi_(sh, 3, 5, 7, '="Last 30 days:  "&TEXT(SUMIFS(' + amt + ',' + dt + ',">="&(TODAY()-30)),"$#,##0.00")', '#e8effb');
   kpi_(sh, 3, 9, 11, '="Entries:  "&COUNT(' + amt + ')', '#e8effb');
-  var rev = 'SUMIFS(Bookings!$K$' + SB_FIRST + ':$K,Bookings!$B$' + SB_FIRST + ':$B,"Completed")';
-  kpi_(sh, 4, 1, 2, '="Revenue (completed quotes):  "&TEXT(' + rev + ',"$#,##0.00")', '#d9f2e3');
+  var rev = 'SUM(Income!$F$' + SB_FIRST + ':$F)';
+  kpi_(sh, 4, 1, 2, '="Income (Income tab):  "&TEXT(' + rev + ',"$#,##0.00")', '#d9f2e3');
   kpi_(sh, 4, 3, 4, '="Estimated profit:  "&TEXT(' + rev + '-SUM(' + amt + '),"$#,##0.00")', '#d9f2e3');
-  kpi_(sh, 4, 5, 7, '="Revenue is the quoted price of bookings marked Completed. Edit a quote on the Bookings tab if the final price differed."', '#f4f6fa');
+  kpi_(sh, 4, 5, 7, '="Income is added automatically when a booking is marked Completed. See the Income tab."', '#f4f6fa');
   sh.getRange(4, 5).setFontWeight('normal').setFontSize(9).setFontColor('#55627a').setWrap(true);
   kpi_(sh, 4, 9, 11, '="Top category:  "&IFERROR(INDEX($I$' + SB_FIRST + ':$I$' + (SB_FIRST + CATEGORIES.length - 1) + ',MATCH(MAX($J$' + SB_FIRST + ':$J$' + (SB_FIRST + CATEGORIES.length - 1) + '),$J$' + SB_FIRST + ':$J$' + (SB_FIRST + CATEGORIES.length - 1) + ',0)),"-")', '#e8effb');
   headerRow_(sh, EXP_COLS);
@@ -499,7 +513,7 @@ function addBooking_(p) {
     row = nextRow_(sh);
     sh.getRange(row, 1, 1, 15).setValues([[
       new Date(), 'New', safe_(p.Name), safe_(p.Phone), safe_(p.Email), dateObj, timeText,
-      safe_(p['Car type']), safe_(p['Service type']), p['Add-on'] ? 'Yes' : '', quote,
+      safe_(p['Car type']), safe_(p['Service type']), safe_(p['Add-ons'] || p['Add-on']), quote,
       safe_(p.Address), safe_(p.City), safe_(p['Zip code']), notes
     ]]);
     SpreadsheetApp.flush();
@@ -509,7 +523,7 @@ function addBooking_(p) {
     try {
       var addr = [p.Address, p.City, 'IA', p['Zip code']].filter(String).join(', ');
       var desc = ['Phone: ' + p.Phone, 'Email: ' + (p.Email || '-'), 'Vehicle: ' + (p['Car type'] || '-'),
-                  'Service: ' + (p['Service type'] || '-'), p['Add-on'] ? 'Add-on: ' + p['Add-on'] : '',
+                  'Service: ' + (p['Service type'] || '-'), (p['Add-ons'] || p['Add-on']) ? 'Add-ons: ' + (p['Add-ons'] || p['Add-on']) : '',
                   'Quote: ' + (p['Starting price'] || '-'), 'Notes: ' + (p.Notes || '-')].filter(String).join('\n');
       var ev = cal.createEvent('Soapy Bros: ' + p.Name + ' (' + (p['Service type'] || 'detail') + ')', start, end,
                                { description: desc, location: addr });
@@ -563,5 +577,107 @@ function deleteBooking_(p) {
     sh.insertRowsAfter(sh.getMaxRows(), 1);   // keep the formatted buffer the same size
     SpreadsheetApp.flush();
   } finally { lock.releaseLock(); }
+  try { syncIncome_(); } catch (err) { /* ignore */ }
   return { ok: true };
+}
+
+// =====================================================================
+//  INCOME  (rows appear automatically when a booking is marked Completed)
+// =====================================================================
+
+function formatIncome_(sh) {
+  var N = INC_COLS.length;
+  prepareGrid_(sh, N);
+  var last = sh.getMaxRows();
+  var n = last - SB_FIRST + 1;
+  titleBlock_(sh, N, 'SOAPY BROS  |  Income',
+    'A row is added here automatically when you set a booking to Completed on the Bookings tab. Change the amount if the final price differed.');
+  sh.setRowHeight(3, 40); sh.setRowHeight(4, 8);
+  var amt = '$F$' + SB_FIRST + ':$F';
+  var dt  = '$A$' + SB_FIRST + ':$A';
+  kpi_(sh, 3, 1, 2, '="Total income:  "&TEXT(SUM(' + amt + '),"$#,##0.00")', '#d9f2e3');
+  kpi_(sh, 3, 3, 4, '="This month:  "&TEXT(SUMIFS(' + amt + ',' + dt + ',">="&DATE(YEAR(TODAY()),MONTH(TODAY()),1)),"$#,##0.00")', '#fff4d6');
+  kpi_(sh, 3, 5, 6, '="Jobs paid:  "&COUNT(' + amt + ')', '#e8effb');
+  kpi_(sh, 3, 7, 8, '="Average job:  "&IFERROR(TEXT(AVERAGE(' + amt + '),"$#,##0.00"),"-")', '#e8effb');
+  sh.getRange(4, 1, 1, N).setBackground('#ffffff');
+  headerRow_(sh, INC_COLS);
+  sh.getRange(SB_FIRST, 1, n, N).setBorder(null, null, null, null, null, true, SB_LINE, SpreadsheetApp.BorderStyle.SOLID);
+  alignBody_(sh, INC_COLS, last);
+  sh.getRange(SB_FIRST, 1, n, 1).setNumberFormat('ddd, mmm d, yyyy');
+  sh.getRange(SB_FIRST, 6, n, 1).setNumberFormat('$#,##0.00');
+  sh.getRange(SB_FIRST, 7, n, 1).setDataValidation(SpreadsheetApp.newDataValidation().requireValueInList(METHODS, true).setAllowInvalid(true).build());
+  sh.getRange(SB_FIRST, 8, n, 1).setWrapStrategy(SpreadsheetApp.WrapStrategy.CLIP);
+  var band = sh.getRange(SB_FIRST, 1, n, N).applyRowBanding(SpreadsheetApp.BandingTheme.LIGHT_GREY, false, false);
+  band.setFirstRowColor('#ffffff').setSecondRowColor(SB_BAND);
+  applyWidths_(sh, INC_COLS);
+  sh.setFrozenRows(5);
+  sh.setFrozenColumns(0);
+  if (sh.getFilter()) sh.getFilter().remove();
+  sh.getRange(5, 1, last - 4, N).createFilter();
+  sh.setTabColor('#1e8e5a');
+}
+
+// Runs when you edit a cell. Keeps the Income tab in step with the Status and Quote columns.
+function onEdit(e) {
+  try {
+    if (!e || !e.range) return;
+    var sh = e.range.getSheet();
+    if (sh.getName() !== 'Bookings' || e.range.getLastRow() < SB_FIRST) return;
+    var c1 = e.range.getColumn(), c2 = e.range.getLastColumn();
+    if ((c1 <= 2 && c2 >= 2) || (c1 <= 11 && c2 >= 11)) syncIncome_();
+  } catch (err) { /* never block an edit */ }
+}
+
+function syncIncome_() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var bk = ss.getSheetByName('Bookings'), inc = ss.getSheetByName('Income');
+  if (!bk || !inc) return;
+  var vals = bk.getRange(SB_FIRST, 1, bk.getMaxRows() - SB_FIRST + 1, 15).getValues();
+  var want = {};
+  vals.forEach(function (v) {
+    if (v[2] === '' || v[1] !== 'Completed') return;
+    var key = v[0] instanceof Date ? String(v[0].getTime())
+            : 'm:' + v[2] + '|' + v[3] + '|' + (v[5] instanceof Date ? v[5].getTime() : '');
+    want[key] = {
+      date: v[5] instanceof Date ? v[5] : (v[0] instanceof Date ? v[0] : new Date()),
+      name: v[2], service: v[8], vehicle: v[7], amount: v[10] === '' ? 0 : v[10],
+      notes: v[9] ? 'Add-ons: ' + v[9] : ''
+    };
+  });
+
+  var rows = inc.getMaxRows() - SB_FIRST + 1;
+  var names = inc.getRange(SB_FIRST, 2, rows, 1);
+  var have = {};   // key -> sheet row
+  var notes = names.getNotes();
+  for (var i = rows - 1; i >= 0; i--) {
+    var m = /^booking:(.+)$/.exec(notes[i][0] || '');
+    if (!m) continue;
+    if (!want[m[1]]) {                       // no longer Completed (or deleted): remove its income row
+      inc.deleteRow(SB_FIRST + i);
+      inc.insertRowsAfter(inc.getMaxRows(), 1);
+    }
+  }
+  rows = inc.getMaxRows() - SB_FIRST + 1;
+  names = inc.getRange(SB_FIRST, 2, rows, 1);
+  notes = names.getNotes();
+  var nvals = names.getValues();
+  var empty = -1;
+  for (i = 0; i < rows; i++) {
+    var mm = /^booking:(.+)$/.exec(notes[i][0] || '');
+    if (mm) have[mm[1]] = SB_FIRST + i;
+  }
+  Object.keys(want).forEach(function (key) {
+    var w = want[key];
+    if (have[key]) {
+      var cell = inc.getRange(have[key], 6);
+      if (cell.getValue() !== w.amount) cell.setValue(w.amount);
+      return;
+    }
+    for (var j = 0; j < nvals.length; j++) if (nvals[j][0] === '') { empty = SB_FIRST + j; break; }
+    if (empty < 0) { inc.insertRowsAfter(inc.getMaxRows(), 50); empty = inc.getMaxRows() - 49; nvals = nvals.concat(new Array(50).fill(['']).map(function () { return ['']; })); nvals[empty - SB_FIRST] = ['']; }
+    inc.getRange(empty, 1, 1, 8).setValues([[w.date, w.name, w.service, w.vehicle, 'Soapy Bros', w.amount, '', w.notes]]);
+    inc.getRange(empty, 2).setNote('booking:' + key);
+    nvals[empty - SB_FIRST] = [w.name];
+    empty = -1;
+  });
 }

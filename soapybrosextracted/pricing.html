@@ -70,7 +70,10 @@
         <label for="priceService">Service</label>
         <select id="priceService"><option value="Exterior only">Exterior only</option><option value="Interior only">Interior only</option><option value="Interior & exterior">Interior &amp; exterior</option></select>
       </div>
-      <label class="addon"><input type="checkbox" id="priceAddon"><span>Add additional seat covers and carpet set <b>+$25</b></span></label>
+      <label class="addon"><input type="checkbox" class="price-addon" id="priceSeat" data-key="seat" data-price="25"><span>Add additional seat covers and carpet set <b>+$25</b></span></label>
+      <label class="addon"><input type="checkbox" class="price-addon" id="priceStain" data-key="stain" data-price="30"><span>Add stain remover <b>+$30</b></span></label>
+      <label class="addon"><input type="checkbox" class="price-addon" id="priceEngine" data-key="engine" data-price="30"><span>Add engine bay cleaning <b>+$30</b></span></label>
+      
       <div class="price-out">
         <div><span>Starting at</span><strong id="priceResult">$40.00</strong></div>
         <a class="btn btn-primary" id="priceBookBtn" href="book.html?vehicle=Sedan&service=Exterior%20only">Book with this info &rarr;</a>
@@ -141,14 +144,14 @@
 
     function updatePrice() {
       updateServiceOptions();
-      const amount = prices[vehicle.value][service.value] + (document.getElementById('priceAddon').checked ? 25 : 0);
+      const amount = prices[vehicle.value][service.value] + Array.prototype.reduce.call(document.querySelectorAll('.price-addon:checked'), function(t, c){ return t + (+c.dataset.price); }, 0);
       result.textContent = '$' + amount.toFixed(2);
-      bookBtn.href = 'book.html?vehicle=' + encodeURIComponent(vehicle.value) + '&service=' + encodeURIComponent(service.value) + (document.getElementById('priceAddon').checked ? '&addon=1' : '');
+      bookBtn.href = 'book.html?vehicle=' + encodeURIComponent(vehicle.value) + '&service=' + encodeURIComponent(service.value) + (function(){ var k = Array.prototype.map.call(document.querySelectorAll('.price-addon:checked'), function(c){ return c.dataset.key; }); return k.length ? '&addons=' + k.join(',') : ''; })();
     }
 
     vehicle.addEventListener('change', updatePrice);
     service.addEventListener('change', updatePrice);
-    document.getElementById('priceAddon').addEventListener('change', updatePrice);
+    document.querySelectorAll('.price-addon').forEach(function(c){ c.addEventListener('change', updatePrice); });
     updatePrice();
   })();
 </script>

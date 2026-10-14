@@ -84,7 +84,10 @@
             <div class="field"><label for="zip">Zip code</label><input type="text" id="zip" name="Zip code" placeholder="52240" inputmode="numeric" pattern="[0-9]{5}" required autocomplete="postal-code"></div>
             <div class="field full"><label for="notes">Notes (optional)</label><textarea id="notes" name="Notes" placeholder="Anything else we should know"></textarea></div>
           </div>
-          <label class="addon"><input type="checkbox" id="addonBox" name="Add-on" value="Additional seat covers and carpet set (+$25)"><span>Add additional seat covers and carpet set <b>+$25</b></span></label>
+          <label class="addon"><input type="checkbox" class="addon-opt" id="addonSeat" data-key="seat" data-price="25" data-label="Additional seat covers and carpet set (+$25)"><span>Add additional seat covers and carpet set <b>+$25</b></span></label>
+      <label class="addon"><input type="checkbox" class="addon-opt" id="addonStain" data-key="stain" data-price="30" data-label="Stain remover (+$30)"><span>Add stain remover <b>+$30</b></span></label>
+      <label class="addon"><input type="checkbox" class="addon-opt" id="addonEngine" data-key="engine" data-price="30" data-label="Engine bay cleaning (+$30)"><span>Add engine bay cleaning <b>+$30</b></span></label>
+      <input type="hidden" id="addonsField" name="Add-ons" value="">
           <input type="hidden" id="estimateField" name="Starting quote">
           <div class="quote-box" id="quoteBox">
             <div><span class="quote-label">Starting quote</span><br><span class="quote-amt" id="quoteAmt">Select a car type &amp; service</span></div>
@@ -172,7 +175,10 @@
     const serviceEl = document.getElementById('service');
     const quoteAmt = document.getElementById('quoteAmt');
     const estimateField = document.getElementById('estimateField');
-    const addonEl = document.getElementById('addonBox');
+    const addonEls = Array.prototype.slice.call(document.querySelectorAll('.addon-opt'));
+    const addonsField = document.getElementById('addonsField');
+    function addonTotal(){ return addonEls.reduce(function(t, c){ return t + (c.checked ? +c.dataset.price : 0); }, 0); }
+    function addonLabels(){ return addonEls.filter(function(c){ return c.checked; }).map(function(c){ return c.dataset.label; }); }
 
     function updateServiceOptions(){
       const car = carTypeEl.value;
@@ -192,9 +198,9 @@
       const car = carTypeEl.value;
       const service = serviceEl.value;
       if (car && service && prices[car] && prices[car][service] !== undefined){
-        const amt = prices[car][service] + (addonEl && addonEl.checked ? 25 : 0);
+        const amt = prices[car][service] + addonTotal();
         quoteAmt.textContent = '$' + amt.toFixed(2);
-        estimateField.value = '$' + amt.toFixed(2) + ' (' + car + ', ' + service + (addonEl && addonEl.checked ? ', with additional seat covers and carpet set' : '') + ')';
+        estimateField.value = '$' + amt.toFixed(2) + ' (' + car + ', ' + service + (addonLabels().length ? ', with ' + addonLabels().map(function(l){ return l.replace(/ \(\+\$\d+\)$/, '').toLowerCase(); }).join(', ') : '') + ')'; addonsField.value = addonLabels().join('; ');
       } else {
         quoteAmt.textContent = 'Select a car type & service';
         estimateField.value = '';
@@ -203,8 +209,8 @@
 
     carTypeEl.addEventListener('change', updateQuote);
     serviceEl.addEventListener('change', updateQuote);
-    addonEl.addEventListener('change', updateQuote);
-    if (new URLSearchParams(window.location.search).get('addon') === '1') addonEl.checked = true;
+    addonEls.forEach(function(c){ c.addEventListener('change', updateQuote); });
+    (function(){ var q = new URLSearchParams(window.location.search); var keys = (q.get('addons') || '').split(','); if (q.get('addon') === '1') keys.push('seat'); addonEls.forEach(function(c){ if (keys.indexOf(c.dataset.key) > -1) c.checked = true; }); })();
 
     const prefillParams = new URLSearchParams(window.location.search);
     const prefillVehicle = prefillParams.get('vehicle');
@@ -238,6 +244,9 @@
     const BUSINESS_START_HOUR = 8;   // 8 AM
     const BUSINESS_END_HOUR = 20;    // 8 PM
     const SLOT_LENGTH_HOURS = 2;     // booking blocks are 2 hours each
+    // Start hours of the 2-hour blocks offered each weekday (0 = Sunday). An empty list means closed.
+    const DAY_SLOTS = { 0: [8,10,12,14,16,18], 1: [17], 2: [17], 3: [17], 4: [], 5: [17], 6: [8,16,18] };
+    function slotHoursFor(d){ return DAY_SLOTS[d.getDay()] || []; }
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     let busyEvents = [];
@@ -267,7 +276,7 @@
 
     function openSlotCount(dateObj){
       let n = 0;
-      for (let hour = BUSINESS_START_HOUR; hour < BUSINESS_END_HOUR; hour += SLOT_LENGTH_HOURS){
+      for (const hour of slotHoursFor(dateObj)){
         const s = new Date(dateObj); s.setHours(hour, 0, 0, 0);
         const e = new Date(dateObj); e.setHours(hour + SLOT_LENGTH_HOURS, 0, 0, 0);
         if (s.getTime() <= Date.now()) continue;
@@ -322,7 +331,7 @@
         const isPast = dateObj < today;
         const openCount = openSlotCount(dateObj);
 
-        if (isPast || (busyLoaded && openCount === 0)){
+        if (isPast || slotHoursFor(dateObj).length === 0 || (busyLoaded && openCount === 0)){
           btn.classList.add('disabled');
           btn.disabled = true;
         } else if (busyLoaded && openCount > 0){
@@ -348,7 +357,7 @@
       selectedDateLabel.textContent = dateObj.toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric' });
       timeSlotGrid.innerHTML = '';
 
-      for (let hour = BUSINESS_START_HOUR; hour < BUSINESS_END_HOUR; hour += SLOT_LENGTH_HOURS){
+      for (const hour of slotHoursFor(dateObj)){
         const slotStart = new Date(dateObj); slotStart.setHours(hour, 0, 0, 0);
         const slotEnd = new Date(dateObj); slotEnd.setHours(hour + SLOT_LENGTH_HOURS, 0, 0, 0);
 

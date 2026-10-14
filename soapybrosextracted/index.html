@@ -74,7 +74,10 @@
         <select id="hqVehicle"><option>Sedan</option><option>SUV</option><option>Minivan</option><option>Truck</option><option>Motorcycle</option></select></div>
       <div class="qc-row"><label for="hqService">Service</label>
         <select id="hqService"><option>Exterior only</option><option>Interior only</option><option>Interior &amp; exterior</option></select></div>
-      <label class="addon"><input type="checkbox" id="hqAddon"><span>Add additional seat covers and carpet set <b>+$25</b></span></label>
+      <label class="addon"><input type="checkbox" class="hq-addon" id="hqSeat" data-key="seat" data-price="25"><span>Add additional seat covers and carpet set <b>+$25</b></span></label>
+      <label class="addon"><input type="checkbox" class="hq-addon" id="hqStain" data-key="stain" data-price="30"><span>Add stain remover <b>+$30</b></span></label>
+      <label class="addon"><input type="checkbox" class="hq-addon" id="hqEngine" data-key="engine" data-price="30"><span>Add engine bay cleaning <b>+$30</b></span></label>
+      
       <div class="qc-out"><span>Starting at</span><strong id="hqPrice">$40</strong></div>
       <a class="btn btn-primary" id="hqBook" href="book.html?vehicle=Sedan&amp;service=Exterior%20only">Book this </a>
       <p class="qc-time" id="hqTime"></p>

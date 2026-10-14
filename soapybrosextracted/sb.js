@@ -215,8 +215,10 @@
   };
   var vSel = document.getElementById('hqVehicle'), sSel = document.getElementById('hqService'),
       out = document.getElementById('hqPrice'), book = document.getElementById('hqBook'),
-      addon = document.getElementById('hqAddon'), timeEl = document.getElementById('hqTime');
+      timeEl = document.getElementById('hqTime');
   var times = { 'Exterior only': 'Typical time: about 45 minutes.', 'Interior only': 'Typical time: about 1 hour 30 minutes.', 'Interior & exterior': 'Typical time: about 1 hour 30 minutes for the interior and 45 minutes for the exterior.' };
+  var addonSum = function () { return Array.prototype.reduce.call(document.querySelectorAll('.hq-addon:checked'), function (t, c) { return t + (+c.dataset.price); }, 0); };
+  var addonKeys = function () { var k = Array.prototype.map.call(document.querySelectorAll('.hq-addon:checked'), function (c) { return c.dataset.key; }); return k.length ? '&addons=' + k.join(',') : ''; };
   if (vSel && sSel && out && book) {
     var update = function () {
       var v = vSel.value;
@@ -224,11 +226,11 @@
         var ok = prices[v][o.value] !== undefined; o.disabled = !ok; o.hidden = !ok;
       });
       if (prices[v][sSel.value] === undefined) sSel.value = 'Exterior only';
-      out.textContent = '$' + (prices[v][sSel.value] + (addon && addon.checked ? 25 : 0));
+      out.textContent = '$' + (prices[v][sSel.value] + addonSum());
       if (timeEl) timeEl.textContent = times[sSel.value] || '';
-      book.href = 'book.html?vehicle=' + encodeURIComponent(v) + '&service=' + encodeURIComponent(sSel.value) + (addon && addon.checked ? '&addon=1' : '');
+      book.href = 'book.html?vehicle=' + encodeURIComponent(v) + '&service=' + encodeURIComponent(sSel.value) + addonKeys();
     };
-    vSel.addEventListener('change', update); sSel.addEventListener('change', update); if (addon) addon.addEventListener('change', update); update();
+    vSel.addEventListener('change', update); sSel.addEventListener('change', update); Array.prototype.forEach.call(document.querySelectorAll('.hq-addon'), function (c) { c.addEventListener('change', update); }); update();
   }
 
   /* ---------- Checklist ticks, one after another ---------- */
@@ -302,13 +304,16 @@
   var chip = document.getElementById('hqNext');
   if (chip) {
     var FEED = 'https://script.google.com/macros/s/AKfycbz596YZ_lMfVCTglc7JPBuccRJjZYkYSh87iX6CPYFz7tkVnJ9n4sq37qGxF5PUxHwC/exec';
+    var SLOTS = { 0: [8,10,12,14,16,18], 1: [17], 2: [17], 3: [17], 4: [], 5: [17], 6: [8,16,18] };
     var same = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
     fetch(FEED).then(function (r) { return r.json(); }).then(function (data) {
       var busy = (data.busy || []).map(function (e) { return { s: new Date(e.start), e: new Date(e.end), all: !!e.allDay }; });
       var now = new Date(), soonest = now;
       for (var d = 0; d < 21; d++) {
         var day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-        for (var h = 8; h < 20; h += 2) {
+        var hrs = SLOTS[day.getDay()] || [];
+        for (var hi = 0; hi < hrs.length; hi++) {
+          var h = hrs[hi];
           var a = new Date(day); a.setHours(h, 0, 0, 0);
           var b = new Date(day); b.setHours(h + 2, 0, 0, 0);
           if (a < soonest) continue;
