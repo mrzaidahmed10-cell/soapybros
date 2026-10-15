@@ -23,7 +23,8 @@
  */
 
 // ---------- settings you may change ----------
-var SB_CALENDAR_NAME = 'Soapy Bros';   // falls back to your default calendar if not found
+var SB_CALENDAR_NAME = 'Soapy Bros Schedule';  // the calendar bookings go to and the site reads from
+var SB_CALENDAR_ID   = '';             // optional: paste the calendar's ID (Calendar settings > Integrate calendar) to be exact
 var SB_DEV_TOKEN     = '!soapybros';   // must match the dev portal password
 var SB_SLOT_HOURS    = 2;
 var SB_SCREEN_PX     = 1400;           // total column width, tuned to fill a laptop screen
@@ -413,8 +414,15 @@ function getAnalytics_() {
 
 // ---------- calendar ----------
 function calendar_() {
-  var found = CalendarApp.getCalendarsByName(SB_CALENDAR_NAME);
-  return found.length ? found[0] : CalendarApp.getDefaultCalendar();
+  var cal = null;
+  if (SB_CALENDAR_ID) cal = CalendarApp.getCalendarById(SB_CALENDAR_ID);
+  if (!cal) {
+    var found = CalendarApp.getCalendarsByName(SB_CALENDAR_NAME);
+    if (found.length) cal = found[0];
+  }
+  // Never fall back to a personal calendar: bookings must only land on the business calendar.
+  if (!cal) throw new Error('Calendar "' + SB_CALENDAR_NAME + '" not found. Share it with the account that owns this script (Make changes to events), then try again.');
+  return cal;
 }
 function busyEvents_() {
   var tz = 'America/Chicago';
@@ -454,6 +462,7 @@ function debugInfo_() {
     scriptTimeZone: Session.getScriptTimeZone(),
     calendarsNamedSoapyBros: cals.length,
     usingCalendar: cal.getName(),
+    calendarId: cal.getId(),
     busyEntries: busy.length,
     firstFew: busy.slice(0, 5)
   };
@@ -504,8 +513,10 @@ function addBooking_(p) {
   var notes = safe_(p.Notes);
 
   var conflict = false;
-  var cal = calendar_();
-  if (start) conflict = cal.getEvents(start, end).length > 0;
+  var cal = null, calError = '';
+  try { cal = calendar_(); } catch (err) { calError = String(err.message || err); }
+  if (cal && start) conflict = cal.getEvents(start, end).length > 0;
+  if (calError) notes = ('CALENDAR NOT UPDATED: ' + calError + ' ' + notes).trim();
   if (conflict) notes = ('CHECK: time overlaps another event. ' + notes).trim();
 
   var lock = LockService.getScriptLock();
@@ -522,7 +533,7 @@ function addBooking_(p) {
     SpreadsheetApp.flush();
   } finally { lock.releaseLock(); }
 
-  if (start) {
+  if (start && cal) {
     try {
       var addr = [p.Address, p.City, 'IA', p['Zip code']].filter(String).join(', ');
       var desc = ['Phone: ' + p.Phone, 'Email: ' + (p.Email || '-'), 'Vehicle: ' + (p['Car type'] || '-'),
