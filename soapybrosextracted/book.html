@@ -244,9 +244,19 @@
     const BUSINESS_START_HOUR = 8;   // 8 AM
     const BUSINESS_END_HOUR = 20;    // 8 PM
     const SLOT_LENGTH_HOURS = 2;     // booking blocks are 2 hours each
-    // Start hours of the 2-hour blocks offered each weekday (0 = Sunday). An empty list means closed.
-    const DAY_SLOTS = { 0: [8,10,12,14,16,18], 1: [], 2: [17], 3: [17], 4: [], 5: [17], 6: [8,16,18] };
-    function slotHoursFor(d){ return DAY_SLOTS[d.getDay()] || []; }
+    // Open 2-hour blocks are worked out from the Soapy Bros calendar: any event on it blocks that time,
+    // so deleting an event frees the time and adding one blocks it. Blocks start on the hour, 8 AM to 8 PM.
+    function slotHoursFor(d){
+      const out = [];
+      let h = BUSINESS_START_HOUR;
+      while (h + SLOT_LENGTH_HOURS <= BUSINESS_END_HOUR){
+        const a = new Date(d); a.setHours(h, 0, 0, 0);
+        const b = new Date(d); b.setHours(h + SLOT_LENGTH_HOURS, 0, 0, 0);
+        const taken = a.getTime() <= Date.now() || busyEvents.some(function(ev){ return ev.allDay ? sameDay(ev.start, d) : (a < ev.end && b > ev.start); });
+        if (taken){ h += 1; } else { out.push(h); h += SLOT_LENGTH_HOURS; }
+      }
+      return out;
+    }
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
     let busyEvents = [];
@@ -331,7 +341,7 @@
         const isPast = dateObj < today;
         const openCount = openSlotCount(dateObj);
 
-        if (isPast || slotHoursFor(dateObj).length === 0 || (busyLoaded && openCount === 0)){
+        if (isPast || (busyLoaded && openCount === 0)){
           btn.classList.add('disabled');
           btn.disabled = true;
         } else if (busyLoaded && openCount > 0){

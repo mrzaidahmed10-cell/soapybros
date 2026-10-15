@@ -304,16 +304,13 @@
   var chip = document.getElementById('hqNext');
   if (chip) {
     var FEED = 'https://script.google.com/macros/s/AKfycbz596YZ_lMfVCTglc7JPBuccRJjZYkYSh87iX6CPYFz7tkVnJ9n4sq37qGxF5PUxHwC/exec';
-    var SLOTS = { 0: [8,10,12,14,16,18], 1: [], 2: [17], 3: [17], 4: [], 5: [17], 6: [8,16,18] };
     var same = function (a, b) { return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate(); };
     fetch(FEED).then(function (r) { return r.json(); }).then(function (data) {
       var busy = (data.busy || []).map(function (e) { return { s: new Date(e.start), e: new Date(e.end), all: !!e.allDay }; });
       var now = new Date(), soonest = now;
       for (var d = 0; d < 21; d++) {
         var day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + d);
-        var hrs = SLOTS[day.getDay()] || [];
-        for (var hi = 0; hi < hrs.length; hi++) {
-          var h = hrs[hi];
+        for (var h = 8; h + 2 <= 20; h++) {
           var a = new Date(day); a.setHours(h, 0, 0, 0);
           var b = new Date(day); b.setHours(h + 2, 0, 0, 0);
           if (a < soonest) continue;
