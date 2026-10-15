@@ -245,7 +245,7 @@
     const BUSINESS_END_HOUR = 20;    // 8 PM
     const SLOT_LENGTH_HOURS = 2;     // booking blocks are 2 hours each
     // Start hours of the 2-hour blocks offered each weekday (0 = Sunday). An empty list means closed.
-    const DAY_SLOTS = { 0: [8,10,12,14,16,18], 1: [17], 2: [17], 3: [17], 4: [], 5: [17], 6: [8,16,18] };
+    const DAY_SLOTS = { 0: [8,10,12,14,16,18], 1: [], 2: [17], 3: [17], 4: [], 5: [17], 6: [8,16,18] };
     function slotHoursFor(d){ return DAY_SLOTS[d.getDay()] || []; }
     const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
