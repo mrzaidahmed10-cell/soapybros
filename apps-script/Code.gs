@@ -117,13 +117,17 @@ function setupSoapyBrosSheet() {
       bookings = ss.insertSheet('Bookings', 0);
     }
   }
+  var dashboard = ss.getSheetByName('Dashboard') || ss.insertSheet('Dashboard', 0);
   var income = ss.getSheetByName('Income') || ss.insertSheet('Income');
   var expenses = ss.getSheetByName('Expenses') || ss.insertSheet('Expenses');
   formatBookings_(bookings);
   formatIncome_(income);
   formatExpenses_(expenses);
   syncIncome_();
-  ss.setActiveSheet(bookings);
+  var analytics = ss.getSheetByName('Analytics') || ss.insertSheet('Analytics');
+  formatDashboard_(dashboard);
+  formatAnalytics_(analytics);
+  ss.setActiveSheet(dashboard);
   SpreadsheetApp.flush();
 }
 
@@ -694,4 +698,156 @@ function syncIncome_() {
     nvals[empty - SB_FIRST] = [w.name];
     empty = -1;
   });
+}
+
+// =====================================================================
+//  DASHBOARD + ANALYTICS  (all formulas, nothing to type here)
+// =====================================================================
+
+var DB_GREY = '#9aa3b2', DB_BODY = '#e4e7ec', DB_BODY2 = '#f1f3f6';
+
+function resetSheet_(sh, ncols, nrows) {
+  sh.clear();
+  sh.getBandings().forEach(function (b) { b.remove(); });
+  sh.setConditionalFormatRules([]);
+  if (sh.getFilter()) sh.getFilter().remove();
+  sh.getCharts().forEach(function (c) { sh.removeChart(c); });
+  sh.setFrozenRows(0); sh.setFrozenColumns(0);
+  var mc = sh.getMaxColumns();
+  if (mc < ncols) sh.insertColumnsAfter(mc, ncols - mc);
+  mc = sh.getMaxColumns();
+  if (mc > ncols) sh.deleteColumns(ncols + 1, mc - ncols);
+  var mr = sh.getMaxRows();
+  if (mr < nrows) sh.insertRowsAfter(mr, nrows - mr);
+  mr = sh.getMaxRows();
+  if (mr > nrows) sh.deleteRows(nrows + 1, mr - nrows);
+  sh.setHiddenGridlines(true);
+  sh.getRange(1, 1, nrows, ncols).setFontFamily('Inter').setFontSize(10).setFontColor('#1b2a41').setVerticalAlignment('middle');
+}
+function bar_(sh, row, ncols, text) {
+  sh.getRange(row, 1, 1, ncols).merge().setValue(text).setBackground(SB_NAVY).setFontColor('#ffffff')
+    .setFontWeight('bold').setFontSize(14).setHorizontalAlignment('center');
+  sh.setRowHeight(row, 34);
+}
+function hdr_(sh, row, labels) {
+  sh.getRange(row, 1, 1, labels.length).setValues([labels]).setBackground(DB_GREY).setFontWeight('bold')
+    .setFontColor('#10213f').setHorizontalAlignment('center');
+  sh.setRowHeight(row, 28);
+}
+function body_(sh, row, n, ncols) {
+  for (var i = 0; i < n; i++) sh.getRange(row + i, 1, 1, ncols).setBackground(i % 2 ? DB_BODY2 : DB_BODY).setHorizontalAlignment('center');
+  sh.getRange(row, 1, n, ncols).setBorder(null, null, null, null, null, true, '#ffffff', SpreadsheetApp.BorderStyle.SOLID);
+  sh.setRowHeights(row, n, 24);
+}
+
+function formatDashboard_(sh) {
+  var N = 6;
+  resetSheet_(sh, N, 47);
+  for (var c = 1; c <= N; c++) sh.setColumnWidth(c, Math.round(SB_SCREEN_PX / N));
+  sh.getRange(1, 1, 1, N).merge().setValue('Soapy Bros Dashboard').setBackground(SB_NAVY).setFontColor('#ffffff')
+    .setFontWeight('bold').setFontSize(22).setHorizontalAlignment('center');
+  sh.setRowHeight(1, 48);
+  sh.getRange(2, 1, 1, N).setValues([['Total Income', 'Total Costs', 'Profit', 'Jobs Completed', 'Income This Month', 'Waiting for a Reply']])
+    .setBackground(DB_GREY).setFontWeight('bold').setFontSize(11).setFontColor('#10213f').setHorizontalAlignment('center');
+  sh.getRange(3, 1, 1, N).setFormulas([[
+    '=SUM(Income!$F$6:$F)', '=SUM(Expenses!$F$6:$F)', '=A3-B3', '=COUNT(Income!$F$6:$F)',
+    '=SUMIFS(Income!$F$6:$F,Income!$A$6:$A,">="&DATE(YEAR(TODAY()),MONTH(TODAY()),1))',
+    '=COUNTIF(Bookings!$B$6:$B,"New")'
+  ]]).setBackground(DB_BODY).setFontWeight('bold').setFontSize(18).setHorizontalAlignment('center');
+  sh.getRange(3, 1, 1, 3).setNumberFormat('$#,##0.00');
+  sh.getRange(3, 5).setNumberFormat('$#,##0.00');
+  sh.getRange(3, 4).setNumberFormat('0'); sh.getRange(3, 6).setNumberFormat('0');
+  sh.setRowHeight(2, 28); sh.setRowHeight(3, 44); sh.setRowHeight(4, 12);
+
+  var B = function (col) { return 'Bookings!$' + col + '$6:$' + col; };
+  var cols6 = '{' + [B('C'), B('F'), B('G'), B('H'), B('I'), B('D')].join(',') + '}';
+  var upHdr = ['Customer Name', 'Date', 'Time', 'Car Type', 'Type of Wash', 'Phone Number'];
+
+  bar_(sh, 5, N, 'Upcoming Details');
+  hdr_(sh, 6, upHdr);
+  body_(sh, 7, 10, N);
+  sh.getRange(7, 1).setFormula('=IFERROR(ARRAY_CONSTRAIN(SORT(FILTER(' + cols6 + ',' + B('C') + '<>"",' + B('F') + '>=TODAY(),' + B('B') + '<>"Cancelled",' + B('B') + '<>"Completed"),2,TRUE),10,6),"No upcoming bookings")');
+  sh.getRange(7, 2, 10, 1).setNumberFormat('ddd, mmm d, yyyy');
+  sh.setRowHeight(17, 14);
+
+  bar_(sh, 18, N, 'Waiting for a Reply (status: New)');
+  hdr_(sh, 19, upHdr);
+  body_(sh, 20, 5, N);
+  sh.getRange(20, 1).setFormula('=IFERROR(ARRAY_CONSTRAIN(SORT(FILTER(' + cols6 + ',' + B('C') + '<>"",' + B('B') + '="New"),2,TRUE),5,6),"Nothing waiting")');
+  sh.getRange(20, 2, 5, 1).setNumberFormat('ddd, mmm d, yyyy');
+  sh.setRowHeight(25, 14);
+
+  bar_(sh, 26, N, 'Recontact (21+ days since last completed job)');
+  hdr_(sh, 27, ['Name', 'Last Visit', 'Days Since', 'Car Type', 'Last Service', 'Phone Number']);
+  body_(sh, 28, 20, N);
+  var upcomingPhones = 'IFERROR(FILTER(' + B('D') + ',' + B('F') + '>=TODAY(),' + B('B') + '<>"Cancelled",' + B('B') + '<>"Completed"),"~")';
+  var f = '=IFERROR(LET(d,QUERY(FILTER({' + [B('C'), B('D'), B('H'), B('F'), B('I')].join(',') + '},' + B('B') + '="Completed",' + B('C') + '<>"",' + B('D') + '<>""),' +
+    '"select max(Col1), max(Col4), max(Col3), max(Col5), Col2 where Col4 is not null group by Col2 label max(Col1) \'\', max(Col4) \'\', max(Col3) \'\', max(Col5) \'\', Col2 \'\'",0),' +
+    'f,FILTER(d,ISNUMBER(INDEX(d,0,2)),IFERROR(TODAY()-INDEX(d,0,2)>=21,FALSE),ISNA(MATCH(INDEX(d,0,5),' + upcomingPhones + ',0))),' +
+    's,SORT(f,2,TRUE),' +
+    'ARRAY_CONSTRAIN({INDEX(s,0,1),INDEX(s,0,2),TODAY()-INDEX(s,0,2),INDEX(s,0,3),INDEX(s,0,4),INDEX(s,0,5)},20,6)),"Nobody due yet")';
+  sh.getRange(28, 1).setFormula(f);
+  sh.getRange(28, 2, 20, 1).setNumberFormat('m/d/yyyy');
+  sh.getRange(28, 3, 20, 1).setNumberFormat('0');
+  sh.setTabColor(SB_NAVY);
+}
+
+function formatAnalytics_(sh) {
+  var N = 12;
+  resetSheet_(sh, N, 40);
+  [150, 110, 110, 110, 130, 20, 110, 110, 110, 110, 110, 110].forEach(function (w, i) { sh.setColumnWidth(i + 1, w); });
+  sh.getRange(1, 1, 1, N).merge().setValue('Soapy Bros Analytics').setBackground(SB_NAVY).setFontColor('#ffffff')
+    .setFontWeight('bold').setFontSize(22).setHorizontalAlignment('center');
+  sh.setRowHeight(1, 48); sh.setRowHeight(2, 12);
+  var M = 'EDATE(DATE(YEAR(TODAY()),MONTH(TODAY()),1),ROW()-16)';
+  var IA = 'Income!$A$6:$A', IF_ = 'Income!$F$6:$F', EA = 'Expenses!$A$6:$A', EF = 'Expenses!$F$6:$F';
+
+  bar_(sh, 3, 5, 'Last 12 Months');
+  hdr_(sh, 4, ['Month', 'Jobs', 'Income', 'Costs', 'Profit']);
+  body_(sh, 5, 12, 5);
+  var rows = [];
+  for (var r = 5; r <= 16; r++) {
+    var m = M.replace('ROW()', String(r));
+    rows.push([
+      '=TEXT(' + m + ',"mmm yy")',
+      '=COUNTIFS(' + IA + ',">="&' + m + ',' + IA + ',"<"&EDATE(' + m + ',1))',
+      '=SUMIFS(' + IF_ + ',' + IA + ',">="&' + m + ',' + IA + ',"<"&EDATE(' + m + ',1))',
+      '=SUMIFS(' + EF + ',' + EA + ',">="&' + m + ',' + EA + ',"<"&EDATE(' + m + ',1))',
+      '=C' + r + '-D' + r]);
+  }
+  sh.getRange(5, 1, 12, 5).setFormulas(rows);
+  sh.getRange(5, 3, 12, 3).setNumberFormat('$#,##0.00');
+  sh.getRange(5, 5, 12, 1).setFontWeight('bold');
+
+  var Bk = function (col) { return 'Bookings!$' + col + '$6:$' + col; };
+  function table(top, title, labels, keys, colName, extraHdr) {
+    bar_(sh, top, 5, title);
+    hdr_(sh, top + 1, [colName, 'Requests', 'Completed', 'Cancelled', extraHdr]);
+    body_(sh, top + 2, keys.length, 5);
+    var fs = keys.map(function (k, i) {
+      var r = top + 2 + i;
+      var crit = labels === 'addon' ? Bk('J') + ',"*' + k[1] + '*"' : Bk(labels) + ',$A' + r;
+      return [k[0],
+        '=COUNTIFS(' + crit + ')',
+        '=COUNTIFS(' + crit + ',' + Bk('B') + ',"Completed")',
+        '=COUNTIFS(' + crit + ',' + Bk('B') + ',"Cancelled")',
+        '=SUMIFS(' + Bk('K') + ',' + crit + ',' + Bk('B') + ',"Completed")'];
+    });
+    sh.getRange(top + 2, 1, keys.length, 5).setFormulas(fs.map(function (row, i) { return [keys[i][0]].concat(row.slice(1)); }));
+    sh.getRange(top + 2, 5, keys.length, 1).setNumberFormat('$#,##0');
+  }
+  table(18, 'By Service', 'I', [['Exterior only'], ['Interior only'], ['Interior & exterior']], 'Service', 'Quote value (completed)');
+  table(24, 'By Vehicle', 'H', [['Sedan'], ['SUV'], ['Minivan'], ['Truck'], ['Motorcycle']], 'Vehicle', 'Quote value (completed)');
+  table(32, 'Add-ons Chosen', 'addon', [['Seat covers and carpet set', 'seat covers'], ['Stain remover', 'stain remover'], ['Engine bay cleaning', 'engine bay']], 'Add-on', 'Quote value (completed)');
+  sh.setRowHeight(17, 14); sh.setRowHeight(23, 14); sh.setRowHeight(31, 14);
+
+  var chart = sh.newChart().setChartType(Charts.ChartType.COLUMN)
+    .addRange(sh.getRange('A4:A16')).addRange(sh.getRange('C4:E16'))
+    .setNumHeaders(1).setPosition(3, 7, 4, 0)
+    .setOption('title', 'Income, costs and profit by month')
+    .setOption('colors', ['#2f6fed', '#c0392b', '#1e8e5a'])
+    .setOption('legend', { position: 'bottom' })
+    .setOption('width', 700).setOption('height', 330).build();
+  sh.insertChart(chart);
+  sh.setTabColor('#6b7a99');
 }
