@@ -29,6 +29,7 @@ var SB_SLOT_HOURS    = 2;
 var SB_SCREEN_PX     = 1400;           // total column width, tuned to fill a laptop screen
 var SB_BUFFER_ROWS   = 500;            // empty formatted rows kept below the data
 var SB_BUSY_DAYS     = 90;             // how far ahead the date picker looks
+var SB_IGNORE_TITLES = ['school'];     // events whose title contains any of these never block the site
 
 var SB_NAVY   = '#0b1f3a';
 var SB_NAVY2  = '#16335c';
@@ -424,6 +425,8 @@ function busyEvents_() {
   var events = calendar_().getEvents(from, to);
   events.forEach(function (ev) {
     try {
+      var title = String(ev.getTitle() || '').toLowerCase();
+      if (SB_IGNORE_TITLES.some(function (t) { return t && title.indexOf(t) > -1; })) return;
       if (ev.isAllDayEvent()) {
         // one entry per day so multi-day blocks grey out every day (dates read in Chicago time)
         var d = new Date(ev.getAllDayStartDate());
