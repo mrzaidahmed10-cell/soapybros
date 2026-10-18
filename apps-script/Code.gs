@@ -368,6 +368,7 @@ function doPost(e) {
     if (action === 'deletebooking') { requireToken_(p.token); return json_(deleteBooking_(p)); }
     return json_(addBooking_(p));
   } catch (err) {
+    try { logFailure_(p, err); } catch (e3) { /* ignore */ }
     return json_({ ok: false, error: String(err.message || err) });
   }
 }
@@ -546,7 +547,13 @@ function addBooking_(p) {
       var ev = cal.createEvent('Soapy Bros: ' + p.Name + ' (' + (p['Service type'] || 'detail') + ')', start, end,
                                { description: desc, location: addr });
       bookingsSheet_().getRange(row, 3).setNote('eventId:' + ev.getId());
-    } catch (err) { /* sheet row is saved even if the calendar call fails */ }
+    } catch (err) {
+      // the sheet row is saved even if the calendar call fails; say so in the Notes cell
+      try {
+        var nc = bookingsSheet_().getRange(row, 15);
+        nc.setValue(('CALENDAR FAILED: ' + String(err.message || err) + ' ' + nc.getValue()).trim());
+      } catch (e2) { /* ignore */ }
+    }
   }
   return { ok: true, conflict: conflict };
 }
@@ -850,4 +857,12 @@ function formatAnalytics_(sh) {
     .setOption('width', 700).setOption('height', 330).build();
   sh.insertChart(chart);
   sh.setTabColor('#6b7a99');
+}
+
+// If a booking fails for any reason, keep the raw request on a "Failed bookings" tab so it can be re-entered.
+function logFailure_(p, err) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sh = ss.getSheetByName('Failed bookings') || ss.insertSheet('Failed bookings');
+  if (sh.getLastRow() === 0) sh.appendRow(['When', 'Error', 'Request']);
+  sh.appendRow([new Date(), String(err.message || err), JSON.stringify(p)]);
 }

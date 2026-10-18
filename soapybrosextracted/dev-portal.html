@@ -438,6 +438,12 @@
       fetch(authedUrl({ action: 'recentbookings' }))
         .then(function(res){ return res.json(); })
         .then(function(data){
+          if (data && data.ok === false){
+            container.innerHTML = '<div class="portal-empty">The booking list could not be loaded: ' + escapeHtml(data.error || 'unknown error') + '</div>';
+            document.getElementById('statBookings').textContent = '-';
+            updateDeleteButtons();
+            return;
+          }
           currentBookings = (data && data.bookings) || [];
           if (currentBookings.length === 0){
             container.innerHTML = '<div class="portal-empty">No bookings logged yet.</div>';
