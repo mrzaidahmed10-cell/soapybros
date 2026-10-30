@@ -513,7 +513,7 @@ function addBooking_(p) {
   }
   var timeText = st ? label_(st) + ' - ' + label_(en) : '';
   var quote = '';
-  var qm = /\$\s*([\d,]+(?:\.\d+)?)/.exec(String(p['Starting price'] || ''));
+  var qm = /\$\s*([\d,]+(?:\.\d+)?)/.exec(String(quoteText_(p) || ''));
   if (qm) quote = parseFloat(qm[1].replace(/,/g, ''));
   var notes = safe_(p.Notes);
 
@@ -557,8 +557,14 @@ function addBooking_(p) {
 }
 
 // Every add-on the customer ticked, one per line, so none gets lost.
+function quoteText_(p) { return String(p['Starting quote'] || p['Starting price'] || ''); }
+
 function addonList_(p) {
   var raw = String(p['Add-ons'] || p['Add-on'] || '');
+  if (!raw) {   // fall back to the quote text: "$145.00 (SUV, Interior only, with a, b)"
+    var m = /, with (.+)\)\s*$/.exec(quoteText_(p));
+    if (m) raw = m[1].replace(/\s*,\s*/g, ';');
+  }
   return raw.split(/\s*;\s*|\s*\n\s*/).map(function (s) { return s.trim(); }).filter(String);
 }
 
@@ -569,7 +575,7 @@ function eventDesc_(p) {
     'Vehicle: ' + (p['Car type'] || '-'),
     'Add-ons: ' + (add.length ? '' : 'none'),
   ].concat(add.map(function (a) { return '  + ' + a; }))
-   .concat(['Quote: ' + (p['Starting price'] || '-'), '',
+   .concat(['Quote: ' + (quoteText_(p) || '-'), '',
             'Phone: ' + p.Phone, 'Email: ' + (p.Email || '-'), 'Notes: ' + (p.Notes || '-')]).join('\n');
 }
 
