@@ -27,6 +27,7 @@ var SB_CALENDAR_NAME = 'Soapy Bros Schedule';  // the calendar bookings go to an
 var SB_CALENDAR_ID   = '';             // optional: paste the calendar's ID (Calendar settings > Integrate calendar) to be exact
 var SB_DEV_TOKEN     = '!soapybros';   // must match the dev portal password
 var SB_SLOT_HOURS    = 2;
+var SB_NOTIFY_EMAIL  = 'soapybrosic@gmail.com';   // new-booking alerts go here
 var SB_SCREEN_PX     = 1400;           // total column width, tuned to fill a laptop screen
 var SB_BUFFER_ROWS   = 500;            // empty formatted rows kept below the data
 var SB_BUSY_DAYS     = 90;             // how far ahead the date picker looks
@@ -102,6 +103,7 @@ function authorizeSoapyBros() {
   var cal = calendar_();
   var n = cal.getEvents(new Date(), new Date(Date.now() + 7 * 86400000)).length;
   SpreadsheetApp.getActiveSpreadsheet().getName();
+  MailApp.sendEmail(SB_NOTIFY_EMAIL, 'Soapy Bros alerts are on', 'This is a test. New bookings will be emailed here.');
   Logger.log('Calendar "' + cal.getName() + '" is reachable. Events in the next 7 days: ' + n);
 }
 
@@ -553,6 +555,7 @@ function addBooking_(p) {
       } catch (e2) { /* ignore */ }
     }
   }
+  notifyOwner_(p, timeText, quote, conflict, calError);
   return { ok: true, conflict: conflict };
 }
 
@@ -577,6 +580,26 @@ function eventDesc_(p) {
   ].concat(add.map(function (a) { return '  + ' + a; }))
    .concat(['Quote: ' + (quoteText_(p) || '-'), '',
             'Phone: ' + p.Phone, 'Email: ' + (p.Email || '-'), 'Notes: ' + (p.Notes || '-')]).join('\n');
+}
+
+// Emails SB_NOTIFY_EMAIL the moment a booking lands (Google's own calendar alert does not fire for events the owner creates).
+function notifyOwner_(p, timeText, quote, conflict, calError) {
+  try {
+    var add = addonList_(p);
+    var when = (p['Preferred date'] || '') + ' ' + timeText;
+    var body = ['New booking: ' + p.Name, '',
+      'When: ' + when, 'Service: ' + (p['Service type'] || '-') + ' (' + (p['Car type'] || '-') + ')',
+      'Add-ons: ' + (add.length ? add.join('; ') : 'none'), 'Quote: ' + (quote !== '' ? '$' + quote : '-'), '',
+      'Phone: ' + p.Phone, 'Email: ' + (p.Email || '-'),
+      'Address: ' + [p.Address, p.City, p['Zip code']].filter(String).join(', '),
+      'Notes: ' + (p.Notes || '-')];
+    if (conflict) body.push('', 'WARNING: this time overlaps another calendar event.');
+    if (calError) body.push('', 'WARNING: calendar not updated: ' + calError);
+    MailApp.sendEmail({ to: SB_NOTIFY_EMAIL, subject: 'New booking: ' + p.Name + ' - ' + (p['Service type'] || 'Detail') + ' (' + when.trim() + ')',
+                        body: body.join('\n'), name: 'Soapy Bros Bookings' });
+  } catch (err) {
+    try { logFailure_(p, 'Email alert failed: ' + String(err.message || err)); } catch (e2) { /* ignore */ }
+  }
 }
 
 function recentBookings_() {
